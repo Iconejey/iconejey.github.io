@@ -1,2 +1,3 @@
-# iconejey.github.io
-Using Github.io to host my portfolio ! 
+# My protfolio
+
+Using Github.io to host my [portfolio](https://iconejey.github.io/) !
