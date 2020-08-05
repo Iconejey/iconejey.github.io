@@ -3,10 +3,8 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="shortcut icon" type="image/png" href="./img/icon.png" />
+		<link rel="shortcut icon" type="image/png" href="./img/icon/icon192.png" />
 		<link rel="stylesheet" href="styles/style.css" />
-		<link rel="stylesheet" href="styles/glider.min.css" />
-		<link rel="stylesheet" href="http://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 		<link rel="manifest" href="manifest.json" />
 
 		<title>Portfolio</title>
@@ -27,129 +25,92 @@
 					<p id="job">Étudiant L Info</p>
 				</div>
 			</div>
-			<svg id="line"></svg>
 
+			<svg class="line"></svg>
 			<h2>À propos</h2>
-			<p>
-				J'ai 19 ans et je suis étudiant en deuxième année de Licence Informatique à l'<a
-					href="http://www.univ-ag.fr/"
-					>Université des Antilles</a
-				>. Je suis membre de l'association <a href="https://wi-bash.fr/">Wi-Bash</a> avec laquelle j'ai
-				participé à deux concours de programmation dont je suis sorti 3ème.
-			</p>
-
-			<h2>Projets</h2>
-			<div class="glider-contain multiple">
-				<div class="glider">
-					<div class="project_element">
-						<img src="./img/The Mute Bow.jpg" />
-						<div id="project_title">
-							<div>
-								<h2>The Mute Bow</h2>
-								<p>Projet de jeu mobile web.</p>
-							</div>
-							<img src="img/js.png" />
-						</div>
-						<div class="proj_btns_div transparent">
-							<button onclick="{location.assign(`https://the-mute-bow.github.io/`)}">
-								<img src="https://img.icons8.com/windows/512/202124/play.png" />
-								<p>Jouer</p>
-							</button>
-						</div>
-					</div>
-
-					<div class="project_element">
-						<img src="./img/Magic Archer.png" />
-						<div id="project_title">
-							<div>
-								<h2>Magic Archer</h2>
-								<p>Projet de jeu PC avec pygame.</p>
-							</div>
-							<img src="img/python.png" />
-						</div>
-						<div class="proj_btns_div">
-							<button onclick="{location.assign(`https://github.com/Iconejey/Magic-Archer`)}">
-								<img src="./img/github.png" alt="" />
-								<p>Github</p>
-							</button>
-						</div>
-					</div>
-
-					<div class="project_element">
-						<img src="./img/RIPA.jpg" />
-						<div id="project_title">
-							<div>
-								<h2>RIPA</h2>
-								<p>Projet de drone terrestre quadrupède.</p>
-							</div>
-							<img src="img/js.png" />
-						</div>
-						<div class="proj_btns_div">
-							<button onclick="{location.assign(`https://github.com/Iconejey/RIPA`)}">
-								<img src="./img/github.png" alt="" />
-								<p>Github</p>
-							</button>
-						</div>
-					</div>
-				</div>
-
-				<button aria-label="Previous" class="glider-prev">
-					<i class="fa fa-chevron-left"></i>
-				</button>
-
-				<button aria-label="Next" class="glider-next">
-					<i class="fa fa-chevron-right"></i>
-				</button>
-
-				<div id="dots" role="tablist" class="glider-dots"></div>
+			<div class="centered">
+				<p>
+					J'ai 19 ans et je suis étudiant en deuxième année de Licence Informatique à l'<a href="http://www.univ-ag.fr/">Université des Antilles</a>.<br /><br />
+					Je suis membre de l'association <a href="https://wi-bash.fr/">Wi-Bash</a> avec laquelle je travaille et participe à de nombreux projets dont deux
+					<a href="https://youtu.be/ChrRf1UXkNg?t=894">concours de programmation</a> en mars 2020 dont je suis sorti 3ème.<br /><br />
+					Pour mon projet <a href="">RIPA</a> j'ai commencé à apprendre python en mars 2018 puis le C#. Aujourd'hui je le constinue en javascript avec node.js.<br /><br />
+					Avec l'université l'ai appris Python plus en profondeur avec le module Pygame. J'ai d'ailleur dû rendre un devoir que j'ai appelé <a href="">Magic Archer</a> qui m'a tellement plu que j'ai décidé de le refactor en
+					Progressive Web App sous le nom de <a href="">The Mute Bow</a>. Et je me suis donc mis à apprendre Javascript.
+				</p>
 			</div>
 
+			<svg class="line"></svg>
+			<h2>Projets</h2>
+			<div id="projects">
+				<div class="project-row">
+					<a href="https://the-mute-bow.github.io" class="project">
+						<video autoplay loop disablePictureInPicture src="./img/the-mute-bow.mp4" type="video/mp"></video>
+						<p>The Mute Bow</p>
+					</a>
+
+					<a class="project">
+						<video autoplay loop disablePictureInPicture src="./img/ripa.mp4" type="video/mp"></video>
+						<p>RIPA</p>
+					</a>
+				</div>
+				<div class="project-row">
+					<a class="project">
+						<video autoplay loop disablePictureInPicture src="./img/grapxel.mp4" type="video/mp"></video>
+						<p>Grapxel</p>
+					</a>
+
+					<a class="project">
+						<video autoplay loop disablePictureInPicture src="./img/magic-archer.mp4" type="video/mp"></video>
+						<p>Magic Archer</p>
+					</a>
+				</div>
+			</div>
+
+			<svg class="line"></svg>
 			<h2>Technologies</h2>
 			<div class="btn_list">
-				<ul>
-					<button>Python 3.8</button>
-					<button>Pygame</button>
-					<button>Socket.py</button>
-					<button>Serial.py</button>
-					<button class="transparent">C#</button>
-					<button class="transparent">C</button>
-					<button>Javascript</button>
-					<button>Html</button>
-					<button>CSS</button>
-					<button>Socket.io</button>
-					<button>Node.js</button>
-					<button class="transparent">React.js</button>
-					<button class="transparent">React Native</button>
-					<button class="transparent">Flutter</button>
-					<button>Raspberri Pi</button>
-					<button>Arduino</button>
-					<button class="transparent">Blender3D</button>
-				</ul>
+				<button>Python 3.8</button>
+				<button>Pygame</button>
+				<button>Socket.py</button>
+				<button>Serial.py</button>
+				<button class="transparent">C#</button>
+				<button class="transparent">C</button>
+				<button>Javascript</button>
+				<button>Html</button>
+				<button>CSS</button>
+				<button>Progressigve Web App</button>
+				<button>Socket.io</button>
+				<button>Node.js</button>
+				<button class="transparent">React.js</button>
+				<button class="transparent">React Native</button>
+				<button class="transparent">Flutter</button>
+				<button>Raspberry Pi</button>
+				<button>Arduino</button>
+				<button class="transparent">Blender3D</button>
 			</div>
 
 			<p class="transparent">*Les éléments grisés ne sont pas entièrement maîtrisés.</p>
 
+			<svg class="line"></svg>
 			<h2>Contact</h2>
-			<p id="contact">
-				E-mail: <a href="mailto:nicolas-gouwy@hotmail.com">nicolas-gouwy@hotmail.com</a> <br />N° tel:
-				<a>+590690943693</a>
-			</p>
-			<div class="btn_list_img">
-				<ul>
-					<button onclick="{location.assign() = `https://github.com/Iconejey`}">
-						<img src="./img/github.png" />
-					</button>
+			<div class="centered">
+				<p id="contact">
+					E-mail: <a href="mailto:nicolas-gouwy@hotmail.com">nicolas-gouwy@hotmail.com</a> <br />N° tel:
+					<a href="tel:+590690943693">+590 690 94 36 93</a>
+				</p>
+			</div>
 
-					<button onclick="{location.assign() = `https://www.linkedin.com/in/nicolas-gouwy-4650211a5/`}">
-						<img
-							src="https://lh3.googleusercontent.com/fqYJHtyzZzA4vacRzeJoB93QNvA5-mvR-8UB5oVLxdYDSTpfLp_KgYD4IqVGJUgFEJo=s180-rw"
-						/>
-					</button>
-				</ul>
+			<div class="btn_list_img">
+				<a title="Mon Github" href="https://github.com/Iconejey">
+					<img src="./img/github.png" />
+				</a>
+
+				<a title="Mon LinkedIn" href="https://www.linkedin.com/in/nicolas-gouwy-4650211a5">
+					<img src="./img/Logo-LinkedIn.png" />
+				</a>
 			</div>
 		</div>
 
 		<script src="./main.js"></script>
-		<script src="./glider.min.js"></script>
 	</body>
 </html>
