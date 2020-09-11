@@ -1,3 +1,5 @@
+// v2
+
 let files = ['./', './index.html', './styles/style.css', './main.js'];
 
 self.addEventListener('install', event => {

@@ -29,8 +29,8 @@ const getGrid = coords => grids[coords[1] * 3 + coords[0] + 1];
 
 function click(x, y) {
 	if ((player || !game.IA) && !win(game.big)) {
-		for (let coords of game.on) {
-			if (coords[0] == Math.floor(x / 3) && coords[1] == Math.floor(y / 3)) play(x, y);
+		for (let coords of getFree()) {
+			if (coords[0] == x && coords[1] == y) play(x, y);
 		}
 	}
 }
