@@ -1,6 +1,4 @@
-// version 04/08/2020
-
-let files = [];
+let files = ['./', './index.html', './styles/style.css', './main.js'];
 
 self.addEventListener('install', event => {
 	event.waitUntil(

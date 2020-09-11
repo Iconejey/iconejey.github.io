@@ -1,0 +1,21 @@
+{
+	"name": "Big Tac Toe",
+	"short_name": "Big Tac Toe",
+	"start_url": "https://iconejey.github.io/big-tac-toe/",
+	"background_color": "#0d1418",
+	"theme_color": "#0d1418",
+	"display": "fullscreen",
+	"orientation": "natural",
+	"icons": [
+		{
+			"src": "./icon192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "./icon512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}

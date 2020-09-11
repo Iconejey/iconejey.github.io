@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="keywords" content="tic, big, tac, toe, morpion" />
+		<meta name="description" content="Big Tac Toe, 9 in one." />
+		<meta name="author" content="Nicolas Gouwy" />
+
+		<meta name="google" content="notranslate" />
+		<meta name="googlebot" content="all" />
+		<meta name="robots" content="all" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="theme-color" content="#0d1418" />
+		<link rel="apple-touch-icon" href="./icon192.png" />
+		<link rel="shortcut icon" type="image/png" href="./icon192.png" />
+		<link rel="stylesheet" href="./styles/style.css" />
+		<link rel="manifest" href="manifest.json" />
+
+		<title>Big Tac Toe</title>
+	</head>
+	<body>
+		<h1>Big Tac Toe</h1>
+
+		<section id="chose-players">
+			<a onclick="initGrid(true)">One player</a>
+			<a onclick="initGrid(false)">Two players</a>
+		</section>
+
+		<div class="hid big grid" style="left: 0vw; top: 0vw"></div>
+		<div class="hid small grid" style="left: 0vw; top: 0vw"></div>
+		<div class="hid small grid" style="left: 33vw; top: 0vw"></div>
+		<div class="hid small grid" style="left: 66vw; top: 0vw"></div>
+		<div class="hid small grid" style="left: 0vw; top: 33vw"></div>
+		<div class="hid small grid" style="left: 33vw; top: 33vw"></div>
+		<div class="hid small grid" style="left: 66vw; top: 33vw"></div>
+		<div class="hid small grid" style="left: 0vw; top: 66vw"></div>
+		<div class="hid small grid" style="left: 33vw; top: 66vw"></div>
+		<div class="hid small grid" style="left: 66vw; top: 66vw"></div>
+
+		<div class="marks">
+			<svg class="mark" id="cross">
+				<line x1="20%" y1="20%" x2="80%" y2="80%" />
+				<line x1="80%" y1="20%" x2="20%" y2="80%" />
+			</svg>
+
+			<svg class="mark" id="circle">
+				<circle cx="50%" cy="50%" r="35%" />
+			</svg>
+		</div>
+
+		<script src="main.js"></script>
+	</body>
+</html>
