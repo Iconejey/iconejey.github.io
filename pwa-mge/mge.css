@@ -11,6 +11,7 @@ html {
 
 .mge-main canvas {
 	background-color: #181818;
+	filter: blur(0px);
 }
 
 .mge-main section {
@@ -26,5 +27,5 @@ html {
 }
 
 .on-cover {
-	filter: blur(0.4em);
+	touch-action: none;
 }

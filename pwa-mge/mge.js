@@ -9,12 +9,11 @@ let joystick_obj = side => {
 		side: side,
 		fixed: false,
 		blink: null,
+		min_op: 0,
 
 		ttrig: 200,
 		rtrig: 0.2,
 		rout: 2,
-
-		min_op: 0,
 
 		base: { x: 0, y: 0, r: 60, active: 0, opacity: 0 },
 		tip: { x: 0, y: 0, r: 25, active: 0, opacity: 0 },
@@ -97,6 +96,7 @@ var mge = {
 	cover: document.querySelector('.mge-main section'),
 	ctx: null,
 	touch_margin: 32,
+	blur: { act: 0, targ: 0, scale: 5 },
 
 	clear: () => mge.ctx.clearRect(0, 0, mge.canvas.width, mge.canvas.height),
 
@@ -121,17 +121,20 @@ var mge = {
 		if (mode == 'on' || (!mode && !c)) {
 			mge.cover.classList.remove('mge-hidden');
 			mge.canvas.classList.add('on-cover');
-			console.log('cover on');
+			mge.atCoverOn();
 			return 'on';
 		}
 
 		if (mode == 'off' || (!mode && c)) {
-			console.log('cover off');
 			mge.cover.classList.add('mge-hidden');
 			mge.canvas.classList.remove('on-cover');
+			mge.atCoverOff();
 			return 'off';
 		}
 	},
+
+	atCoverOn: () => {},
+	atCoverOff: () => {},
 
 	resize: () => {
 		let rect = mge.canvas.getBoundingClientRect();
@@ -190,6 +193,9 @@ var mge = {
 	tick: new_time => {
 		delay = new_time - time;
 		time = new_time;
+
+		mge.blur.act = mge.blur.act * 0.9 + mge.blur.targ * 0.1;
+		mge.canvas.style.filter = 'blur(' + mge.blur.scale * mge.blur.act + 'px)';
 
 		mge.joysticks.L.update();
 		mge.joysticks.R.update();
