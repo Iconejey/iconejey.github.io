@@ -8,9 +8,7 @@ self.addEventListener('install', event => {
 			return cache
 				.addAll(files)
 				.then(() => self.skipWaiting())
-				.catch(error => {
-					console.error('Cache error.');
-				});
+				.catch(err => console.error('Cache error.', err));
 		})
 	);
 });
@@ -20,15 +18,7 @@ self.addEventListener('fetch', event => {
 	file = file[file.length - 1];
 	event.respondWith(
 		caches.match(event.request).then(res => {
-			if (res) {
-				// console.log(`used cache for ${file}`);
-				return res;
-			} else {
-				// console.warn(`used fetch for ${file}`);
-				return fetch(event.request).catch(err => {
-					console.error(`fetch error for ${file}`);
-				});
-			}
+			return res ? res : fetch(event.request).catch(err => console.error(`Fetch error for ${file}`, err));
 		})
 	);
 });

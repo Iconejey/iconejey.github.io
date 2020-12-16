@@ -138,6 +138,10 @@ a {
   right: 0px;
 }
 
+#job {
+  font-family: monospace;
+}
+
 #main {
   border-radius: 32px 32px 0px 0px;
 }

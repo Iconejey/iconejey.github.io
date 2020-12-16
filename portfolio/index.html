@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="keywords" content="portfolio, Nicolas, Gouwy, dev, web, python, javascript" />
+		<meta name="description" content="Portfolio de Nicolas Gouwy, dev python / javascript." />
+		<meta name="author" content="Nicolas Gouwy" />
+		<meta name="googlebot" content="all" />
+		<meta name="robots" content="all" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="theme-color" content="#202124" />
+		<link rel="apple-touch-icon" href="./img/icon/icon192.png" />
+		<link rel="shortcut icon" type="image/png" href="./img/icon/icon192.png" />
+		<link rel="stylesheet" href="styles/style.css" />
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<link rel="manifest" href="manifest.json" />
+
+		<title>Portfolio</title>
+	</head>
+	<body>
+		<div id="code">
+			<svg id="svg"></svg>
+		</div>
+
+		<div id="title">
+			<h1 id="title1">Créateur de 01001011</h1>
+			<h1 id="title2">< Dev Python/Javascript /></h1>
+		</div>
+
+		<div class="page slidein" id="main">
+			<div id="profil">
+				<img src="./img/profil.jpg" style="border-radius: 50%" />
+				<div>
+					<h2>Nicolas Gouwy</h2>
+					<p id="job">Étudiant L Info</p>
+				</div>
+			</div>
+
+			<div class="line"></div>
+			<h2>Projets</h2>
+			<section>
+				<div class="project-row">
+					<a class="project" onclick="setPage('the-mute-bow', true)">
+						<img src="./img/the-mute-bow.gif" />
+						<p>The Mute Bow</p>
+					</a>
+
+					<a class="project">
+						<img src="./img/ripa.gif" />
+						<p>RIPA</p>
+					</a>
+				</div>
+				<div class="project-row">
+					<a class="project">
+						<img src="./img/grapxel.gif" />
+						<p>Grapxel</p>
+					</a>
+
+					<a class="project" onclick="setPage('magic-archer', true)">
+						<img src="./img/magic-archer.gif" />
+						<p>Magic Archer</p>
+					</a>
+				</div>
+			</section>
+
+			<section>
+				<div style="flex: 1">
+					<div class="line"></div>
+					<h2>À propos</h2>
+					<div class="centered">
+						<p>
+							J'ai 19 ans et je suis étudiant en deuxième année de Licence Informatique à l'<a href="http://www.univ-ag.fr/">Université des Antilles</a>.<br /><br />
+							Je suis membre de l'association <a href="https://wi-bash.fr/">Wi-Bash</a> avec laquelle je travaille et participe à de nombreux projets dont deux
+							<a href="https://youtu.be/ChrRf1UXkNg?t=894">concours de programmation</a> en mars 2020 dont je suis sorti 3ème.<br /><br />
+							Pour mon projet <a>RIPA</a> j'ai commencé à apprendre python en mars 2018 puis le C#. Aujourd'hui je le continue en javascript avec node.js.<br /><br />
+							Avec l'université j'ai appris Python plus en profondeur avec le module Pygame. J'ai d'ailleurs dû rendre un devoir que j'ai appelé <a onclick="setPage('magic-archer', true)">Magic Archer</a> et ce dernier m'a
+							tellement plu que j'ai décidé de le refaire en Progressive Web App sous le nom de <a onclick="setPage('the-mute-bow', true)">The Mute Bow</a>. Je me suis donc mis à apprendre Javascript pour ce nouveau projet.
+						</p>
+					</div>
+				</div>
+
+				<div style="flex: 1">
+					<div class="line"></div>
+					<h2>Technologies</h2>
+					<div class="btn_list">
+						<button>Python 3.8</button>
+						<button>Pygame</button>
+						<button>Socket.py</button>
+						<button>Serial.py</button>
+						<button class="transparent">C#</button>
+						<button class="transparent">C</button>
+						<button>Desktop</button>
+						<button>Web</button>
+						<button>Android</button>
+						<button>Progressigve Web App</button>
+						<button>Javascript</button>
+						<button>Html</button>
+						<button>CSS</button>
+						<button>Socket.io</button>
+						<button>Node.js</button>
+						<button class="transparent">React.js</button>
+						<button class="transparent">React Native</button>
+						<button class="transparent">Flutter</button>
+						<button>Raspberry Pi</button>
+						<button>Arduino</button>
+						<button class="transparent">Robotique</button>
+						<button class="transparent">Blender3D</button>
+					</div>
+
+					<p class="transparent" style="margin-bottom: 16px">*Les éléments grisés ne sont pas entièrement maîtrisés.<br /></p>
+
+					<div class="line"></div>
+					<h2>Contact</h2>
+					<div class="centered">
+						<p id="contact">
+							E-mail: <a href="mailto:nicolas.gwy@gmail.com">nicolas.gwy@gmail.com</a> <br />N° tel:
+							<a href="tel:+590690943693">+590 690 94 36 93</a>
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<div class="btn_list_img">
+				<a title="Mon Github" href="https://github.com/Iconejey">
+					<img src="./img/github.png" />
+				</a>
+
+				<a title="Mon LinkedIn" href="https://www.linkedin.com/in/nicolas-gouwy-4650211a5">
+					<img src="./img/Logo-LinkedIn.png" />
+				</a>
+			</div>
+		</div>
+
+		<div class="page" id="the-mute-bow">
+			<div id="profil">
+				<a class="material-button" onclick="setPage('the-mute-bow', false)">
+					<i class="material-icons">clear</i>
+				</a>
+				<div>
+					<h2>The Mute Bow</h2>
+					<p>Jeu web mobile</p>
+				</div>
+			</div>
+
+			<section>
+				<div style="flex: 2">
+					<div class="line"></div>
+					<h2>Vidéo</h2>
+					<video controls poster="./img/the-mute-bow.jpg" src="./img/the-mute-bow.mp4"></video>
+					<div class="line"></div>
+					<h2>Description</h2>
+					<div class="centered">
+						<p>
+							The Mute Bow est un jeu mobile web dans lequel vous combattez des créatures sombres et mystérieuses dans la peau d'un homme muet nommé Eliot, accompagné des ses amis archers.<br /><br />
+							Il s'agit en quelques sortes d'une suite à
+							<a onclick="movePage('the-mute-bow', 'magic-archer')">Magic Archer</a>, Un jeu Pygame qui m'a été donné de rendre en devoir en fin de première année de licence (avril 2020). La direction artisique (inspirée du
+							jeu <a href="https://www.kickstarter.com/projects/hydezeke/flamberge">Flamberge</a>) et le gameplay m'avaient tellement plu que j'ai décidé de créer une nouvelle version plus aboutie sur mobile.<br /><br />
+							Statut: <span class="green">En développement</span>, <span class="green">disponible</span>
+						</p>
+					</div>
+				</div>
+				<div style="flex: 1">
+					<div class="line"></div>
+					<h2>Technologies</h2>
+					<div class="btn_list">
+						<button>Javascript</button>
+						<button>Html</button>
+						<button>CSS</button>
+						<button>Android</button>
+						<button>Web</button>
+						<button>Progressigve Web App</button>
+					</div>
+
+					<p class="transparent" style="margin-bottom: 16px">*Les éléments grisés ne sont pas entièrement maîtrisés.<br /></p>
+
+					<div class="line"></div>
+					<h2>Jouer</h2>
+
+					<div class="centered">
+						<p id="contact">Cliquez sur l'app ou scannez le QR code:</p>
+						<a href="https://the-mute-bow.github.io/" class="play-zone">
+							<img class="app-icon" src="https://the-mute-bow.github.io/img/icon/icon512.png" />
+							<img class="qrcode" src="./img/the-mute-bow-qrcode.png" alt="QR code" />
+						</a>
+						<p id="contact">Ou alors utilizez <a href="https://the-mute-bow.github.io/">ce lien</a>.</p>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<div class="page" id="magic-archer">
+			<div id="profil">
+				<a class="material-button" onclick="setPage('magic-archer', false)">
+					<i class="material-icons">clear</i>
+				</a>
+				<div>
+					<h2>Magic Archer</h2>
+					<p>Jeu pygame</p>
+				</div>
+			</div>
+
+			<section>
+				<div style="flex: 2">
+					<div class="line"></div>
+					<h2>Vidéo</h2>
+					<video controls poster="./img/magic-archer.jpg" src="./img/magic-archer.mp4"></video>
+					<div class="line"></div>
+					<h2>Description</h2>
+					<div class="centered">
+						<p>
+							Magic Archer est un jeu simple qui se joue au clavier et à la souris. Le but est de tuer le plus de zombies possible avant de mourir.<br /><br />
+							Il s'agit d'un devoir que je devais rendre pour mon cours d'approfondissement informatique en avril 2020. Le but de ce devoir était de comprendre la programmation orientée objet en python et de voir pygame plus
+							en profondeur (notamment les animations).<br /><br />
+							Ce devoir m'avait beaucoup plu, surtout la direction artisique (inspirée du jeu <a href="https://www.kickstarter.com/projects/hydezeke/flamberge">Flamberge</a>) et le gameplay que j'avais beaucoup travaillé (plus
+							que nécessaire pour ce devoir). Au point que durant le confinement du covid-19 j'ai décidé d'aller plus loin: Me lancer dans <a onclick="movePage('magic-archer', 'the-mute-bow')">The Mute Bow</a> et recréer ce
+							jeu pour mobile.<br /><br />
+							Statut: <span class="green">Terminé</span>
+						</p>
+					</div>
+				</div>
+				<div style="flex: 1">
+					<div class="line"></div>
+					<h2>Technologies</h2>
+					<div class="btn_list">
+						<button>Python 3.8</button>
+						<button>Pygame</button>
+						<button>Desktop</button>
+					</div>
+
+					<p class="transparent" style="margin-bottom: 16px">*Les éléments grisés ne sont pas entièrement maîtrisés.<br /></p>
+
+					<div class="line"></div>
+					<h2>Jouer</h2>
+
+					<div class="centered">
+						<p>Utilizez <a href="https://github.com/Iconejey/Magic-Archer">ce lien</a> pour voir le repos Github et avoir accès au code.</p>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<script src="./main.js"></script>
+		<script src="./img/code.js"></script>
+	</body>
+</html>

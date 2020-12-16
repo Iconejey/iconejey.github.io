@@ -1,0 +1,30 @@
+html {
+	overflow: hidden;
+	background-color: #333;
+}
+
+* {
+	margin: 0px;
+	padding: 0px;
+	box-sizing: 0px;
+}
+
+.mge-main canvas {
+	background-color: #181818;
+}
+
+.mge-main section {
+	top: 0px;
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	color: white;
+}
+
+.mge-hidden {
+	display: none;
+}
+
+.on-cover {
+	filter: blur(0.4em);
+}
