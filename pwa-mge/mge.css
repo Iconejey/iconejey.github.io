@@ -1,6 +1,6 @@
 html {
 	overflow: hidden;
-	background-color: #333;
+	background-color: #181818;
 }
 
 * {
@@ -11,10 +11,9 @@ html {
 
 .mge-main canvas {
 	background-color: #181818;
-	filter: blur(0px);
 }
 
-.mge-main section {
+.mge-overlay section {
 	top: 0px;
 	position: absolute;
 	width: 100vw;
@@ -22,10 +21,11 @@ html {
 	color: white;
 }
 
-.mge-hidden {
-	display: none;
+.mge-overlay #landscape,
+.mge-overlay #fullscreen {
+	background-color: #181818;
 }
 
-.on-cover {
-	touch-action: none;
+.mge-hidden {
+	display: none;
 }

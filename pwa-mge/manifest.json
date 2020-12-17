@@ -4,7 +4,7 @@
 
 	"start_url": "https://iconejey.github.io/pwa-mge/",
 	"display": "fullscreen",
-	"orientation": "any",
+	"orientation": "landscape",
 
 	"background_color": "#181818",
 	"theme_color": "#181818",

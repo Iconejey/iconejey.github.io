@@ -2,21 +2,8 @@
 mge.joysticks.L.fixed = true;
 mge.joysticks.L.min_op = 0.2;
 
-// Fullscreen on right joystick tap
-mge.joysticks.R.onTap = (x, y) => mge.fullscreen('on');
-
-// Covering on left joystick tap
-mge.joysticks.L.onTap = (x, y) => mge.covering();
-
-// Blur when canvas at cover on
-mge.atCoverOn = () => {
-	mge.blur.targ = 1;
-};
-
-// Remove bluring at cover off
-mge.atCoverOff = () => {
-	mge.blur.targ = 0;
-};
+// Showing "tap" section on left joystick tap
+mge.joysticks.L.onTap = (x, y) => mge.setOverlay('tap');
 
 // Logic loop
 mge.logic = () => {

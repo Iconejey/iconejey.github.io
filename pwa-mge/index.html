@@ -16,17 +16,33 @@
 
 		<!-- [Required] Manifest and stylesheet -->
 		<link rel="manifest" href="./manifest.json" />
-		<link rel="stylesheet" href="mge.css" />
+		<link rel="stylesheet" href="./mge.css" />
+		<link rel="stylesheet" href="./style.css" />
 	</head>
 	<body>
-		<!-- [Required] Mobile Game Engine Element (fullscreen) -->
+		<!-- [Required] Mobile Game Engine Element -->
 		<div class="mge-main">
+			<!-- [Required] Game canvas -->
 			<canvas></canvas>
 
-			<section>
-				<p>Over the canvas when left joystick tap.</p>
-				<a onclick="mge.covering('off')">[exit]</a>
-			</section>
+			<!-- [Required] Sections shown over canvas using mge.setOverlay(id) -->
+			<div class="mge-overlay">
+				<!-- [Required] Lanscape section -->
+				<section id="landscape">
+					<p>Over the canvas when screen not held in landscape mode.</p>
+				</section>
+
+				<!-- [Required] Fullscreen section -->
+				<section id="fullscreen">
+					<p>Over the canvas when game not in fullscreen and mge.forceFulscreen is true.<br />Tap on screen to go fullscreen.</p>
+				</section>
+
+				<!-- [Optional] Custom section -->
+				<section id="tap">
+					<p>Over the canvas after left-joystick tap.</p>
+					<a onclick="mge.setOverlay(null)">[exit]</a>
+				</section>
+			</div>
 		</div>
 
 		<!-- [Optional] Cookie tools -->

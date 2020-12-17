@@ -68,12 +68,12 @@ let joystick_obj = side => {
 
 	j.update = () => {
 		if (!j.tip.active) {
-			j.tip.x = j.tip.x * 0.9 + j.base.x * 0.1;
-			j.tip.y = j.tip.y * 0.9 + j.base.y * 0.1;
+			j.tip.x = mge.converge(j.tip.x, j.base.x, 0.1);
+			j.tip.y = mge.converge(j.tip.y, j.base.y, 0.1);
 		}
 
-		j.tip.opacity = j.tip.opacity * 0.9 + Math.max(j.min_op, j.tip.active) * 0.1;
-		j.base.opacity = j.base.opacity * 0.9 + Math.max(j.min_op, j.base.active) * 0.1;
+		j.tip.opacity = mge.converge(j.tip.opacity, Math.max(j.min_op, j.tip.active), 0.1);
+		j.base.opacity = mge.converge(j.base.opacity, Math.max(j.min_op, j.base.active), 0.1);
 
 		if (j.blink && time - j.blink > 600) {
 			j.blink = time;
@@ -93,19 +93,21 @@ let joystick_obj = side => {
 // Game engine object
 var mge = {
 	canvas: document.querySelector('.mge-main canvas'),
-	cover: document.querySelector('.mge-main section'),
+	overlay: document.querySelector('.mge-main .mge-overlay'),
+
 	ctx: null,
 	touch_margin: 32,
-	blur: { act: 0, targ: 0, scale: 5 },
 
 	clear: () => mge.ctx.clearRect(0, 0, mge.canvas.width, mge.canvas.height),
 
-	fullscreen: mode => {
+	forceFullscreen: true,
+	fullscreenOn: false,
+	setFullscreen: mode => {
 		let fse = document.fullscreenElement;
 
 		if ((!mode || mode == 'on') && !fse) {
 			document.documentElement.requestFullscreen();
-			mge.canvas.requestFullscreen();
+			mge.canvas.requestFullscreen().catch(err => {});
 			return 'on';
 		}
 
@@ -115,26 +117,35 @@ var mge = {
 		}
 	},
 
-	covering: mode => {
-		let c = mge.canvas.classList.contains('on-cover');
+	landscapeMode: false,
 
-		if (mode == 'on' || (!mode && !c)) {
-			mge.cover.classList.remove('mge-hidden');
-			mge.canvas.classList.add('on-cover');
-			mge.atCoverOn();
-			return 'on';
-		}
+	overlayID: 'undefined',
+	overlayContent: 'undefined',
+	setOverlay: id => {
+		if (id != mge.overlayID) {
+			mge.canvas.classList.remove('mge-canvas-on-' + mge.overlayID + '-section');
+			mge.canvas.classList.add('mge-canvas-on-' + id + '-section');
 
-		if (mode == 'off' || (!mode && c)) {
-			mge.cover.classList.add('mge-hidden');
-			mge.canvas.classList.remove('on-cover');
-			mge.atCoverOff();
-			return 'off';
+			mge.overlayID = id;
+			if (!['landscape', 'fullscreen'].includes(id)) mge.overlayContent = id;
+
+			if (id) {
+				mge.overlay.classList.remove('mge-hidden');
+
+				let done = false;
+				for (let section of document.querySelectorAll('.mge-overlay section')) {
+					if (section.id == id) {
+						done = true;
+						section.classList.remove('mge-hidden');
+					} else section.classList.add('mge-hidden');
+				}
+
+				if (!done) console.error(id + ': This section does not exist.');
+			} else {
+				mge.overlay.classList.add('mge-hidden');
+			}
 		}
 	},
-
-	atCoverOn: () => {},
-	atCoverOff: () => {},
 
 	resize: () => {
 		let rect = mge.canvas.getBoundingClientRect();
@@ -145,14 +156,21 @@ var mge = {
 		mge.canvas.style.width = outerWidth + 'px';
 		mge.canvas.style.height = outerHeight + 'px';
 
-		for (let j of ['L', 'R']) {
-			j = mge.joysticks[j];
+		mge.landscapeMode = mge.canvas.width > mge.canvas.height;
+		mge.fullscreenOn = Boolean(document.fullscreenElement);
+
+		let section = mge.overlayContent;
+		if (!mge.landscapeMode) section = 'landscape';
+		if (!mge.fullscreenOn && mge.forceFullscreen) section = 'fullscreen';
+		mge.setOverlay(section);
+
+		mge.joysticks.forEach(j => {
 			j.tip.r = Math.floor(mge.canvas.height / 16);
 			j.base.r = Math.floor(mge.canvas.height / 7);
 			j.tip.x = j.base.x;
 			j.tip.y = j.base.y;
 			j.updatePos();
-		}
+		});
 	},
 
 	loadImg: (srcs, out, onLoad = p => {}, onError = src => {}, onFinish = () => {}) => {
@@ -184,7 +202,16 @@ var mge = {
 
 	joysticks: {
 		L: joystick_obj('L'),
-		R: joystick_obj('R')
+		R: joystick_obj('R'),
+		forEach: callback => {
+			callback(mge.joysticks.L);
+			callback(mge.joysticks.R);
+		}
+	},
+
+	converge: (a, b, n) => {
+		n = Math.min(Math.max(0, (n * delay) / 10), 1);
+		return a * (1 - n) + b * n;
 	},
 
 	logic: () => {},
@@ -194,11 +221,7 @@ var mge = {
 		delay = new_time - time;
 		time = new_time;
 
-		mge.blur.act = mge.blur.act * 0.9 + mge.blur.targ * 0.1;
-		mge.canvas.style.filter = 'blur(' + mge.blur.scale * mge.blur.act + 'px)';
-
-		mge.joysticks.L.update();
-		mge.joysticks.R.update();
+		mge.joysticks.forEach(j => j.update());
 
 		mge.logic();
 		mge.graphics();
@@ -250,8 +273,7 @@ mge.canvas.addEventListener('touchmove', event => {
 		let x = t.clientX * devicePixelRatio;
 		let y = t.clientY * devicePixelRatio;
 
-		for (let j of ['L', 'R']) {
-			j = mge.joysticks[j];
+		mge.joysticks.forEach(j => {
 			if (j.id == t.identifier && j.tip.active) {
 				j.prev = { ...j.tip };
 
@@ -272,7 +294,7 @@ mge.canvas.addEventListener('touchmove', event => {
 					j.updatePos();
 				}
 			}
-		}
+		});
 	}
 });
 
@@ -283,8 +305,7 @@ mge.canvas.addEventListener('touchend', event => {
 		let x = t.clientX * devicePixelRatio;
 		let y = t.clientY * devicePixelRatio;
 
-		for (let j of ['L', 'R']) {
-			j = mge.joysticks[j];
+		mge.joysticks.forEach(j => {
 			if (j.id == t.identifier) {
 				if (j.tip.active && !j.base.active) j.onTap(x, y);
 
@@ -293,16 +314,19 @@ mge.canvas.addEventListener('touchend', event => {
 
 				j.id = -1;
 			}
-		}
+		});
 	}
 });
 
 // Context
 mge.ctx = mge.canvas.getContext('2d');
 
-// Hide cover
-mge.covering('off');
+// Hide overlay
+mge.setOverlay(null);
 
 // Resize event
 addEventListener('resize', event => mge.resize());
 mge.resize();
+
+// Fullscreen section event
+document.querySelector('.mge-overlay #fullscreen').addEventListener('click', event => mge.setFullscreen('on'));

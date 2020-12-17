@@ -4,17 +4,18 @@ permalink: instructions.html
 
 # Progressive Web App - Mobile Game Engine
 
-See working example [here](./pwa-mge/).
+See working example [here](https://iconejey.github.io/pwa-mge/).
 
-## Project structure:
+## Project structure example:
 
 ```
 project
 ├───index.html
+├───style.css
 ├───main.js
 ├───img
-│   ├───icon192.png
-│   └───icon512.png
+│    ├───icon192.png
+│    └───icon512.png
 └───manifest.html
 ```
 
@@ -33,30 +34,54 @@ project
 
 <!-- [Required] Manifest and stylesheet -->
 <link rel="manifest" href="./manifest.json" />
-<link rel="stylesheet" href="mge.css" />
+<link rel="stylesheet" href="https://iconejey.github.io/pwa-mge/mge.css" />
+<link rel="stylesheet" href="./style.css" />
 ```
 
 ## Required for body:
 
 ```html
-<!-- [Required] Mobile Game Engine Element (fullscreen) -->
+<!-- [Required] Mobile Game Engine Element -->
 <div class="mge-main">
+	<!-- [Required] Game canvas -->
 	<canvas></canvas>
 
-	<section>
-		<p>Over the canvas when left joystick tap.</p>
-		<a onclick="mge.covering('off')">[exit]</a>
-	</section>
+	<!-- [Required] Sections shown over canvas using mge.setOverlay(id) -->
+	<div class="mge-overlay">
+		<!-- [Required] Lanscape section -->
+		<section id="landscape">
+			<p>Over the canvas when screen not held in landscape mode.</p>
+		</section>
+
+		<!-- [Required] Fullscreen section -->
+		<section id="fullscreen">
+			<p>Over the canvas when game not in fullscreen and mge.forceFulscreen is true.<br />Tap on screen to go fullscreen.</p>
+		</section>
+
+		<!-- [Optional] Custom section -->
+		<section id="tap">
+			<p>Over the canvas after left-joystick tap.</p>
+			<a onclick="mge.setOverlay(null)">[exit]</a>
+		</section>
+	</div>
 </div>
 
 <!-- [Optional] Cookie tools -->
-<script src="./cookie.js"></script>
+<script src="https://iconejey.github.io/pwa-mge/cookie.js"></script>
 
 <!-- [Required] Mobile Game Engine -->
-<script src="./mge.js"></script>
+<script src="https://iconejey.github.io/pwa-mge/mge.js"></script>
 
 <!-- [Required] Main script -->
 <script src="./main.js"></script>
+```
+
+## style.css example use:
+
+```css
+.mge-canvas-on-truc-section {
+	filter: blur(5px);
+}
 ```
 
 ## main.js example use:
@@ -66,21 +91,8 @@ project
 mge.joysticks.L.fixed = true;
 mge.joysticks.L.min_op = 0.2;
 
-// Fullscreen on right joystick tap
-mge.joysticks.R.onTap = (x, y) => mge.fullscreen('on');
-
-// Covering on left joystick tap
-mge.joysticks.L.onTap = (x, y) => mge.covering();
-
-// Blur when canvas at cover on
-mge.atCoverOn = () => {
-	mge.blur.targ = 1;
-};
-
-// Remove bluring at cover off
-mge.atCoverOff = () => {
-	mge.blur.targ = 0;
-};
+// Showing "tap" section on left joystick tap
+mge.joysticks.L.onTap = (x, y) => mge.setOverlay('tap');
 
 // Logic loop
 mge.logic = () => {
@@ -101,7 +113,7 @@ mge.graphics = () => {
 mge.tick(0);
 ```
 
-## Manifest.json example:
+## manifest.json example:
 
 ```json
 {
@@ -110,7 +122,7 @@ mge.tick(0);
 
 	"start_url": "https://mygame.com/",
 	"display": "fullscreen",
-	"orientation": "any",
+	"orientation": "landscape",
 
 	"background_color": "white",
 	"theme_color": "white",
