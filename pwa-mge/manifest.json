@@ -2,7 +2,7 @@
 	"name": "Mobile Game",
 	"short_name": "Mobile Game",
 
-	"start_url": "https://iconejey.github.io/pwa-mge/",
+	"start_url": "./",
 	"display": "fullscreen",
 	"orientation": "landscape",
 

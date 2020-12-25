@@ -2,8 +2,8 @@
 mge.joysticks.L.fixed = true;
 mge.joysticks.L.min_op = 0.2;
 
-// Showing "tap" section on left joystick tap
-mge.joysticks.L.onTap = (x, y) => mge.setOverlay('tap');
+// Showing example section on left joystick tap
+mge.joysticks.L.onTap = (x, y) => mge.setOverlay('example');
 
 // Logic loop
 mge.logic = () => {

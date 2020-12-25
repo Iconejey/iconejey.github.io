@@ -29,7 +29,7 @@ project
 
 <!-- [Optional] Theme color / icon -->
 <meta name="theme-color" content="#181818" />
-<link rel="shortcut icon" href="./img/icon512.png" type="image/x-icon" />
+<link rel="shortcut icon" href="/img/icon512.png" type="image/x-icon" />
 <link rel="apple-touch-icon" href="./img/icon192.png" />
 
 <!-- [Required] Manifest and stylesheet -->
@@ -59,9 +59,10 @@ project
 		</section>
 
 		<!-- [Optional] Custom section -->
-		<section id="tap">
-			<p>Over the canvas after left-joystick tap.</p>
+		<section id="example">
+			<p>Example of custom overlay.</p>
 			<a onclick="mge.setOverlay(null)">[exit]</a>
+			<img src="./img/icon192.png" alt="icon" />
 		</section>
 	</div>
 </div>
@@ -79,7 +80,17 @@ project
 ## style.css example use:
 
 ```css
-.mge-canvas-on-truc-section {
+/* Style applied to example overlay image */
+.mge-overlay #example img {
+	border-radius: 20%;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+/* Style applied to canvas when the example overlay is shown */
+.mge-canvas-on-example-section {
 	filter: blur(5px);
 }
 ```
@@ -91,8 +102,8 @@ project
 mge.joysticks.L.fixed = true;
 mge.joysticks.L.min_op = 0.2;
 
-// Showing "tap" section on left joystick tap
-mge.joysticks.L.onTap = (x, y) => mge.setOverlay('tap');
+// Showing example section on left joystick tap
+mge.joysticks.L.onTap = (x, y) => mge.setOverlay('example');
 
 // Logic loop
 mge.logic = () => {

@@ -104,14 +104,14 @@ var mge = {
 	fullscreenOn: false,
 	setFullscreen: mode => {
 		let fse = document.fullscreenElement;
+		setTimeout(() => mge.resize(), 10);
 
-		if ((!mode || mode == 'on') && !fse) {
-			document.documentElement.requestFullscreen();
-			mge.canvas.requestFullscreen().catch(err => {});
+		if (!mode || mode == 'on') {
+			document.documentElement.requestFullscreen().catch(err => {});
 			return 'on';
 		}
 
-		if ((!mode || mode == 'off') && fse) {
+		if (!mode || mode == 'off') {
 			document.exitFullscreen();
 			return 'off';
 		}
