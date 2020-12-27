@@ -22,7 +22,10 @@ let joystick_obj = side => {
 
 		time: 0,
 
-		onTap: (x, y) => {},
+		onTap: j => {},
+		onStart: j => {},
+		onMove: j => {},
+		onEnd: j => {},
 		draw: ctx => {},
 		update: ctx => {},
 		updatePos: ctx => {},
@@ -49,7 +52,7 @@ let joystick_obj = side => {
 		ctx.globalAlpha = 1;
 	};
 
-	j.updatePos = () => {
+	j.updatePos = _ => {
 		let dx = j.tip.x - j.base.x;
 		let dy = j.tip.y - j.base.y;
 		let dxy = Math.sqrt(dx * dx + dy * dy);
@@ -66,7 +69,7 @@ let joystick_obj = side => {
 		}
 	};
 
-	j.update = () => {
+	j.update = _ => {
 		if (!j.tip.active) {
 			j.tip.x = mge.converge(j.tip.x, j.base.x, 0.1);
 			j.tip.y = mge.converge(j.tip.y, j.base.y, 0.1);
@@ -98,13 +101,13 @@ var mge = {
 	ctx: null,
 	touch_margin: 32,
 
-	clear: () => mge.ctx.clearRect(0, 0, mge.canvas.width, mge.canvas.height),
+	clear: _ => mge.ctx.clearRect(0, 0, mge.canvas.width, mge.canvas.height),
 
 	forceFullscreen: true,
 	fullscreenOn: false,
 	setFullscreen: mode => {
 		let fse = document.fullscreenElement;
-		setTimeout(() => mge.resize(), 10);
+		setTimeout(_ => mge.resize(), 10);
 
 		if (!mode || mode == 'on') {
 			document.documentElement.requestFullscreen().catch(err => {});
@@ -147,7 +150,7 @@ var mge = {
 		}
 	},
 
-	resize: () => {
+	resize: _ => {
 		let rect = mge.canvas.getBoundingClientRect();
 
 		mge.canvas.width = outerWidth * devicePixelRatio;
@@ -173,7 +176,7 @@ var mge = {
 		});
 	},
 
-	loadImg: (srcs, out, onLoad = p => {}, onError = src => {}, onFinish = () => {}) => {
+	loadImg: (srcs, out, onLoad = p => {}, onError = src => {}, onFinish = _ => {}) => {
 		let load_num = 0;
 		let load_err = false;
 
@@ -214,8 +217,8 @@ var mge = {
 		return a * (1 - n) + b * n;
 	},
 
-	logic: () => {},
-	graphics: () => {},
+	logic: _ => {},
+	graphics: _ => {},
 
 	tick: new_time => {
 		delay = new_time - time;
@@ -263,6 +266,8 @@ mge.canvas.addEventListener('touchstart', event => {
 			j.time = time;
 			j.tip.active = 1;
 		}
+
+		if (j.tip.active) j.onStart(j);
 	}
 });
 
@@ -293,6 +298,8 @@ mge.canvas.addEventListener('touchmove', event => {
 
 					j.updatePos();
 				}
+
+				if (j.tip.active) j.onMove(j);
 			}
 		});
 	}
@@ -307,7 +314,10 @@ mge.canvas.addEventListener('touchend', event => {
 
 		mge.joysticks.forEach(j => {
 			if (j.id == t.identifier) {
-				if (j.tip.active && !j.base.active) j.onTap(x, y);
+				if (j.tip.active) {
+					if (!j.base.active) j.onTap(j);
+					else j.onEnd(j);
+				}
 
 				j.tip.active = 0;
 				j.base.active = 0;
