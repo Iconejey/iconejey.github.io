@@ -1,5 +1,5 @@
 ---
-permalink: instructions.html
+permalink: pwa-mge/documentation.html
 ---
 
 # Progressive Web App - Mobile Game Engine
