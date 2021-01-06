@@ -7,16 +7,15 @@ let joystick_obj = side => {
 	let j = {
 		id: -1,
 		side: side,
-		fixed: false,
-		blink: null,
-		min_op: 0,
+		active: false,
 
 		ttrig: 200,
 		rtrig: 0.2,
 		rout: 2,
 
-		base: { x: 0, y: 0, r: 60, active: 0, opacity: 0 },
-		tip: { x: 0, y: 0, r: 25, active: 0, opacity: 0 },
+		tip: { x: 0, y: 0, r: { min: 7, max: 15, val: 10 }, active: 0, held: false, opacity: { min: 0, max: 1 }, elem: document.querySelector('span.joystick.' + (side == 'L' ? 'left' : 'right') + '.tip') },
+		base: { x: 0, y: 0, r: { min: 7, max: 15, val: 10 }, active: 0, fixed: false, opacity: { min: 0, max: 1 }, elem: document.querySelector('span.joystick.' + (side == 'L' ? 'left' : 'right') + '.base') },
+
 		prev: { x: 0, y: 0 },
 		pos: { x: 0, y: 0, d: 0 },
 
@@ -26,30 +25,46 @@ let joystick_obj = side => {
 		onStart: j => {},
 		onMove: j => {},
 		onEnd: j => {},
+		position: _ => {},
+		setActive: mode => {},
 		draw: ctx => {},
-		update: ctx => {},
-		updatePos: ctx => {},
+		update: _ => {},
+		updatePos: _ => {},
 
 		color: 'white'
 	};
 
-	j.draw = ctx => {
-		ctx.fillStyle = j.color;
-		ctx.strokeStyle = j.color;
-		ctx.lineWidth = j.base.r / 16;
-		ctx.globalAlpha = j.base.opacity;
+	j.setActive = mode => {
+		if (mode != j.active) {
+			j.active = mode;
 
-		ctx.beginPath();
-		ctx.arc(j.base.x, j.base.y, j.base.r, 0, 2 * Math.PI);
-		ctx.stroke();
+			if (mode) {
+				j.tip.elem.style.opacity = 1;
+				j.base.elem.style.opacity = 1;
 
-		ctx.globalAlpha = j.tip.opacity;
+				j.position();
 
-		ctx.beginPath();
-		ctx.arc(j.tip.x, j.tip.y, j.tip.r, 0, 2 * Math.PI);
-		ctx.fill();
+				j.tip.x = j.base.x;
+				j.tip.y = j.base.y;
+			}
+		}
+	};
 
-		ctx.globalAlpha = 1;
+	j.position = _ => {
+		j.base.elem.classList.remove('transition');
+		j.tip.elem.classList.remove('transition');
+
+		let x = (mge.elem.clientWidth / 6) * (j.side == 'R' ? 5 : 1);
+		let y = (mge.elem.clientHeight * 3) / 4;
+
+		j.base.x = x;
+		j.base.y = y;
+
+		j.base.elem.style.left = j.base.x + 'px';
+		j.base.elem.style.top = j.base.y + 'px';
+
+		j.tip.elem.style.left = j.tip.x + 'px';
+		j.tip.elem.style.top = j.tip.y + 'px';
 	};
 
 	j.updatePos = _ => {
@@ -57,11 +72,7 @@ let joystick_obj = side => {
 		let dy = j.tip.y - j.base.y;
 		let dxy = Math.sqrt(dx * dx + dy * dy);
 
-		j.pos = {
-			x: dx / dxy,
-			y: dy / dxy,
-			d: dxy / j.base.r
-		};
+		j.pos = dxy ? { x: dx / dxy, y: dy / dxy, d: (dxy / j.base.elem.clientWidth) * 2 } : { x: 0, y: 0, d: 0 };
 
 		if (j.pos.d > j.rout) {
 			j.tip.active = 0;
@@ -70,24 +81,55 @@ let joystick_obj = side => {
 	};
 
 	j.update = _ => {
-		if (!j.tip.active) {
-			j.tip.x = mge.converge(j.tip.x, j.base.x, 0.1);
-			j.tip.y = mge.converge(j.tip.y, j.base.y, 0.1);
-		}
-
-		j.tip.opacity = mge.converge(j.tip.opacity, Math.max(j.min_op, j.tip.active), 0.1);
-		j.base.opacity = mge.converge(j.base.opacity, Math.max(j.min_op, j.base.active), 0.1);
-
-		if (j.blink && time - j.blink > 600) {
-			j.blink = time;
-			j.tip.opacity = 1;
-			j.base.opacity = 1;
-		}
+		let fix = _ => {
+			if (j.base.fixed) {
+				j.tip.x = j.base.x;
+				j.tip.y = j.base.y;
+			} else {
+				j.base.x = j.tip.x;
+				j.base.y = j.tip.y;
+			}
+		};
 
 		if (j.tip.active) {
-			if (time - j.time > j.ttrig) j.base.active = 1;
-			if (j.pos.d > j.rtrig) j.base.active = 1;
+			if (!j.base.active) {
+				if (j.pos.d > j.rtrig) j.base.active = true;
+				else if (time - j.time > j.ttrig) {
+					j.base.active = true;
+					j.tip.held = true;
+					fix();
+				}
+			}
+		} else {
+			j.tip.x = j.base.x;
+			j.tip.y = j.base.y;
 		}
+
+		if (j.tip.held) fix();
+
+		// Set coords and size of tip and base elements
+		for (let part of ['tip', 'base']) {
+			j[part].elem.style.left = j[part].x + 'px';
+			j[part].elem.style.top = j[part].y + 'px';
+			j[part].elem.style.width = j[part].r.val * 2 + 'vh';
+			j[part].elem.style.height = j[part].r.val * 2 + 'vh';
+
+			let timed = time - j.time > j.ttrig * 2.8;
+
+			if (j.tip.held) {
+				j[part].elem.classList[timed ? 'remove' : 'add']('transition');
+				j[part].elem.style.opacity = j[part].opacity.max;
+			} else if (j[part].active) {
+				j[part].elem.classList.remove('transition');
+				j[part].elem.style.opacity = j[part].opacity.max;
+			} else {
+				j[part].elem.classList.add('transition');
+				j[part].elem.style.opacity = j.active ? j[part].opacity.min : 0;
+			}
+		}
+
+		j.base.r.val = j.tip.held ? j.base.r.min : j.base.r.max;
+		j.tip.r.val = j.tip.r.min;
 	};
 
 	return j;
@@ -95,6 +137,7 @@ let joystick_obj = side => {
 
 // Game engine object
 var mge = {
+	elem: document.querySelector('div.mge-main'),
 	canvas: document.querySelector('.mge-main canvas'),
 	overlay: document.querySelector('.mge-main .mge-overlay'),
 
@@ -151,15 +194,7 @@ var mge = {
 	},
 
 	resize: _ => {
-		let rect = mge.canvas.getBoundingClientRect();
-
-		mge.canvas.width = outerWidth * devicePixelRatio;
-		mge.canvas.height = outerHeight * devicePixelRatio;
-
-		mge.canvas.style.width = outerWidth + 'px';
-		mge.canvas.style.height = outerHeight + 'px';
-
-		mge.landscapeMode = mge.canvas.width > mge.canvas.height;
+		mge.landscapeMode = innerWidth > innerHeight;
 		mge.fullscreenOn = Boolean(document.fullscreenElement);
 
 		let section = mge.overlayContent;
@@ -167,13 +202,7 @@ var mge = {
 		if (!mge.fullscreenOn && mge.forceFullscreen) section = 'fullscreen';
 		mge.setOverlay(section);
 
-		mge.joysticks.forEach(j => {
-			j.tip.r = Math.floor(mge.canvas.height / 16);
-			j.base.r = Math.floor(mge.canvas.height / 7);
-			j.tip.x = j.base.x;
-			j.tip.y = j.base.y;
-			j.updatePos();
-		});
+		mge.joysticks.forEach(j => j.position());
 	},
 
 	loadImg: (srcs, out, onLoad = p => {}, onError = src => {}, onFinish = _ => {}) => {
@@ -212,11 +241,6 @@ var mge = {
 		}
 	},
 
-	converge: (a, b, n) => {
-		n = Math.min(Math.max(0, (n * delay) / 10), 1);
-		return a * (1 - n) + b * n;
-	},
-
 	logic: _ => {},
 	graphics: _ => {},
 
@@ -234,14 +258,16 @@ var mge = {
 };
 
 // Joystick events
-mge.canvas.addEventListener('touchstart', event => {
+document.querySelector('.tactile').addEventListener('touchstart', event => {
 	event.preventDefault();
 
 	for (let t of event.changedTouches) {
-		let x = t.clientX * devicePixelRatio;
-		let y = t.clientY * devicePixelRatio;
+		let x = t.clientX;
+		let y = t.clientY;
 
-		let j = mge.joysticks[x < mge.canvas.width / 2 ? 'L' : 'R'];
+		let j = mge.joysticks[x < mge.elem.clientWidth / 2 ? 'L' : 'R'];
+
+		if (!j.active) return;
 
 		j.id = t.identifier;
 		j.tip.x = x;
@@ -250,33 +276,34 @@ mge.canvas.addEventListener('touchstart', event => {
 		j.prev.x = x;
 		j.prev.y = y;
 
-		if (!j.fixed) {
+		if (!j.base.fixed) {
 			j.base.x = j.tip.x;
 			j.base.y = j.tip.y;
-			j.base.opacity = 0;
 		}
 
 		j.updatePos();
 
-		if (j.pos.d * j.base.r > j.base.r) {
+		let r = j.base.elem.clientWidth / 2;
+
+		if (j.pos.d * r > r) {
 			j.pos = { x: 0, y: 0, d: 0 };
 			j.tip.x = j.base.x;
 			j.tip.y = j.base.y;
 		} else {
 			j.time = time;
-			j.tip.active = 1;
+			j.tip.active = true;
 		}
 
 		if (j.tip.active) j.onStart(j);
 	}
 });
 
-mge.canvas.addEventListener('touchmove', event => {
+document.querySelector('.tactile').addEventListener('touchmove', event => {
 	event.preventDefault();
 
 	for (let t of event.changedTouches) {
-		let x = t.clientX * devicePixelRatio;
-		let y = t.clientY * devicePixelRatio;
+		let x = t.clientX;
+		let y = t.clientY;
 
 		mge.joysticks.forEach(j => {
 			if (j.id == t.identifier && j.tip.active) {
@@ -288,12 +315,14 @@ mge.canvas.addEventListener('touchmove', event => {
 				j.updatePos();
 
 				if (j.pos.d > 1) {
-					if (j.fixed) {
-						j.tip.x = j.base.x + j.pos.x * j.base.r;
-						j.tip.y = j.base.y + j.pos.y * j.base.r;
+					let r = j.base.elem.clientWidth / 2;
+
+					if (j.base.fixed) {
+						j.tip.x = j.base.x + j.pos.x * r;
+						j.tip.y = j.base.y + j.pos.y * r;
 					} else {
-						j.base.x = j.tip.x - (j.pos.x * j.base.r) / j.pos.d;
-						j.base.y = j.tip.y - (j.pos.y * j.base.r) / j.pos.d;
+						j.base.x = j.tip.x - (j.pos.x * r) / j.pos.d;
+						j.base.y = j.tip.y - (j.pos.y * r) / j.pos.d;
 					}
 
 					j.updatePos();
@@ -305,12 +334,12 @@ mge.canvas.addEventListener('touchmove', event => {
 	}
 });
 
-mge.canvas.addEventListener('touchend', event => {
+document.querySelector('.tactile').addEventListener('touchend', event => {
 	event.preventDefault();
 
 	for (let t of event.changedTouches) {
-		let x = t.clientX * devicePixelRatio;
-		let y = t.clientY * devicePixelRatio;
+		let x = t.clientX;
+		let y = t.clientY;
 
 		mge.joysticks.forEach(j => {
 			if (j.id == t.identifier) {
@@ -319,8 +348,9 @@ mge.canvas.addEventListener('touchend', event => {
 					else j.onEnd(j);
 				}
 
-				j.tip.active = 0;
-				j.base.active = 0;
+				j.tip.active = false;
+				j.base.active = false;
+				j.tip.held = false;
 
 				j.id = -1;
 			}
