@@ -3,28 +3,50 @@ mge.joysticks.L.base.fixed = true;
 mge.joysticks.L.base.opacity.min = 0.2;
 mge.joysticks.L.tip.opacity.min = 0.2;
 
+// Example player object
+let player = { x: 0, y: 0 };
+
 // Activating joysticks after 1s
 setTimeout(_ => mge.joysticks.forEach(j => j.setActive(true)), 1000);
 
-// Showing example section on left joystick tap
+// Showing example section on left-joystick tap
 mge.joysticks.L.onTap = j => mge.setOverlay('example');
 
-// Logic loop
-mge.logic = _ => {
-	// mge.canvas.style.left = '100px';
+// Make player jump to a place
+// mge.joysticks.R.onTap = j => (player = mge.toGameCoords(j.tip));
+
+// Move player with left-joystick
+mge.joysticks.L.onPush = j => {
+	player.x += (j.pos.x * delay) / 20;
+	player.y += (j.pos.y * delay) / 20;
 };
+
+// Logic loop
+mge.logic = _ => {};
 
 // Graphics loop
 mge.graphics = _ => {
 	// Clear canvas
 	mge.clear();
 
-	// Drawing background
+	// Set camera on player
+	mge.camera.setOn(player);
+
+	// Update camera
+	mge.camera.update();
+
+	// Draw background
 	mge.ctx.drawImage(imgs['default_background'], 0, 0);
+
+	// Draw player
+	mge.ctx.fillStyle = 'white';
+	let x = Math.floor(player.x);
+	let y = Math.floor(player.y);
+	mge.ctx.fillRect(x, y, 1, 1);
 };
 
-// mge.forceFullscreen = false;
-// mge.resize();
+mge.forceFullscreen = false;
+mge.resize();
 
 // Game images
 let imgs = [];

@@ -21,10 +21,19 @@ let joystick_obj = side => {
 
 		time: 0,
 
+		// Tap event
 		onTap: j => {},
-		onStart: j => {},
-		onMove: j => {},
-		onEnd: j => {},
+
+		// Push events
+		onPushStart: j => {},
+		onPush: j => {},
+		onPushEnd: j => {},
+
+		// Hold events
+		onHoldStart: j => {},
+		onHold: j => {},
+		onHoldEnd: j => {},
+
 		position: _ => {},
 		setActive: mode => {},
 		draw: ctx => {},
@@ -68,11 +77,12 @@ let joystick_obj = side => {
 	};
 
 	j.updatePos = _ => {
+		let r = j.base.elem.clientWidth / 2;
 		let dx = j.tip.x - j.base.x;
 		let dy = j.tip.y - j.base.y;
 		let dxy = Math.sqrt(dx * dx + dy * dy);
 
-		j.pos = dxy ? { x: dx / dxy, y: dy / dxy, d: (dxy / j.base.elem.clientWidth) * 2 } : { x: 0, y: 0, d: 0 };
+		j.pos = { x: dx / r, y: dy / r, d: dxy / r };
 
 		if (j.pos.d > j.rout) {
 			j.tip.active = 0;
@@ -81,8 +91,9 @@ let joystick_obj = side => {
 	};
 
 	j.update = _ => {
+		// To fix position
 		let fix = _ => {
-			if (j.base.fixed) {
+			if (j.base.fixed || !j.tip.active) {
 				j.tip.x = j.base.x;
 				j.tip.y = j.base.y;
 			} else {
@@ -92,20 +103,23 @@ let joystick_obj = side => {
 		};
 
 		if (j.tip.active) {
-			if (!j.base.active) {
-				if (j.pos.d > j.rtrig) j.base.active = true;
-				else if (time - j.time > j.ttrig) {
+			if (j.base.active) {
+				if (j.tip.held) {
+					j.onHold(j);
+					fix();
+				} else j.onPush(j);
+			} else {
+				if (j.pos.d > j.rtrig) {
+					j.base.active = true;
+					j.onPushStart(j);
+				} else if (time - j.time > j.ttrig) {
 					j.base.active = true;
 					j.tip.held = true;
 					fix();
+					j.onHoldStart(j);
 				}
 			}
-		} else {
-			j.tip.x = j.base.x;
-			j.tip.y = j.base.y;
-		}
-
-		if (j.tip.held) fix();
+		} else fix();
 
 		// Set coords and size of tip and base elements
 		for (let part of ['tip', 'base']) {
@@ -128,7 +142,7 @@ let joystick_obj = side => {
 			}
 		}
 
-		j.base.r.val = j.tip.held ? j.base.r.min : j.base.r.max;
+		j.base.r.val = j.tip.held ? j.base.r.min - 1 : j.base.r.max;
 		j.tip.r.val = j.tip.r.min;
 	};
 
@@ -140,6 +154,28 @@ var mge = {
 	elem: document.querySelector('div.mge-main'),
 	canvas: document.querySelector('.mge-main canvas'),
 	overlay: document.querySelector('.mge-main .mge-overlay'),
+
+	camera: {
+		x: 128,
+		y: 128,
+		z: 128,
+		update: _ => {
+			let scale = mge.elem.clientHeight / mge.camera.z;
+			let size = scale * mge.canvas.width;
+
+			// Resize canvas
+			mge.canvas.style.width = size + 'px';
+			mge.canvas.style.height = size + 'px';
+
+			// Move canvas
+			mge.canvas.style.left = -mge.camera.x * scale + 'px';
+			mge.canvas.style.top = -mge.camera.y * scale + 'px';
+		},
+		setOn: obj => {
+			mge.camera.x = obj.x;
+			mge.camera.y = obj.y;
+		}
+	},
 
 	ctx: null,
 	touch_margin: 32,
@@ -203,6 +239,10 @@ var mge = {
 		mge.setOverlay(section);
 
 		mge.joysticks.forEach(j => j.position());
+	},
+
+	toGameCoords: coords => {
+		let x = coords.x;
 	},
 
 	loadImg: (srcs, out, onLoad = p => {}, onError = src => {}, onFinish = _ => {}) => {
@@ -293,8 +333,6 @@ document.querySelector('.tactile').addEventListener('touchstart', event => {
 			j.time = time;
 			j.tip.active = true;
 		}
-
-		if (j.tip.active) j.onStart(j);
 	}
 });
 
@@ -316,10 +354,11 @@ document.querySelector('.tactile').addEventListener('touchmove', event => {
 
 				if (j.pos.d > 1) {
 					let r = j.base.elem.clientWidth / 2;
+					console.log(j.side, r);
 
 					if (j.base.fixed) {
-						j.tip.x = j.base.x + j.pos.x * r;
-						j.tip.y = j.base.y + j.pos.y * r;
+						j.tip.x = j.base.x + (j.pos.x * r) / j.pos.d;
+						j.tip.y = j.base.y + (j.pos.y * r) / j.pos.d;
 					} else {
 						j.base.x = j.tip.x - (j.pos.x * r) / j.pos.d;
 						j.base.y = j.tip.y - (j.pos.y * r) / j.pos.d;
@@ -327,8 +366,6 @@ document.querySelector('.tactile').addEventListener('touchmove', event => {
 
 					j.updatePos();
 				}
-
-				if (j.tip.active) j.onMove(j);
 			}
 		});
 	}
@@ -344,8 +381,10 @@ document.querySelector('.tactile').addEventListener('touchend', event => {
 		mge.joysticks.forEach(j => {
 			if (j.id == t.identifier) {
 				if (j.tip.active) {
-					if (!j.base.active) j.onTap(j);
-					else j.onEnd(j);
+					if (j.base.active) {
+						if (j.tip.held) j.onHoldEnd(j);
+						else j.onPushEnd(j);
+					} else j.onTap(j);
 				}
 
 				j.tip.active = false;
