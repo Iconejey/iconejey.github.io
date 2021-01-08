@@ -24,6 +24,21 @@ html {
 	transform: translate(-50%, -50%);
 }
 
+/* Button shown over canvas */
+a.button {
+	position: absolute;
+	background-color: #fff2;
+	left: 50vw;
+	top: 80vh;
+	transform: translateX(-50%);
+	padding: 2vh 3vh;
+	font-size: 8vh;
+	font-family: monospace;
+	border-radius: 2vh;
+	outline: none;
+	user-select: none;
+}
+
 /* Opaque sections's background */
 .mge-overlay section.opaque {
 	background-color: #181818;

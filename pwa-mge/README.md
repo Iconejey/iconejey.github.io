@@ -23,18 +23,20 @@ project
 
 ```html
 <!-- [Optional] App compatibility and display -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<!-- [Optional] App compatibility and display adaptation -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 
 <!-- [Optional] Theme color / icon -->
 <meta name="theme-color" content="#181818" />
-<link rel="shortcut icon" href="/img/icon512.png" type="image/x-icon" />
+<meta name="color-scheme" content="dark" />
+<link rel="shortcut icon" href="./img/icon512.png" type="image/x-icon" />
 <link rel="apple-touch-icon" href="./img/icon192.png" />
 
 <!-- [Required] Manifest and stylesheet -->
 <link rel="manifest" href="./manifest.json" />
-<link rel="stylesheet" href="https://iconejey.github.io/pwa-mge/mge.css" />
+<link rel="stylesheet" href="./mge.css" />
 <link rel="stylesheet" href="./style.css" />
 ```
 
@@ -46,19 +48,33 @@ project
 	<!-- [Required] Game canvas -->
 	<canvas></canvas>
 
+	<!-- [Required] Touch screen -->
+	<div class="tactile">
+		<span class="joystick left base"></span>
+		<span class="joystick left tip"></span>
+
+		<span class="joystick right base"></span>
+		<span class="joystick right tip"></span>
+	</div>
+
 	<!-- [Required] Sections shown over canvas using mge.setOverlay(id) -->
 	<div class="mge-overlay">
-		<!-- [Required] Lanscape section -->
-		<section id="landscape">
+		<!-- [Required] Blank section -->
+		<section id="blank">
+			<a class="button" onclick="alert('button')">Button</a>
+		</section>
+
+		<!-- [Required] Lanscape opaque section -->
+		<section id="landscape" class="opaque">
 			<p>Over the canvas when screen not held in landscape mode.</p>
 		</section>
 
-		<!-- [Required] Fullscreen section -->
-		<section id="fullscreen">
+		<!-- [Required] Fullscreen opaque section -->
+		<section id="fullscreen" class="opaque">
 			<p>Over the canvas when game not in fullscreen and mge.forceFulscreen is true.<br />Tap on screen to go fullscreen.</p>
 		</section>
 
-		<!-- [Optional] Custom section -->
+		<!-- [Optional] Custom transparent section -->
 		<section id="example">
 			<p>Example of custom overlay.</p>
 			<a onclick="mge.setOverlay(null)">[exit]</a>
@@ -68,10 +84,10 @@ project
 </div>
 
 <!-- [Optional] Cookie tools -->
-<script src="https://iconejey.github.io/pwa-mge/cookie.js"></script>
+<script src="./cookie.js"></script>
 
 <!-- [Required] Mobile Game Engine -->
-<script src="https://iconejey.github.io/pwa-mge/mge.js"></script>
+<script src="./mge.js"></script>
 
 <!-- [Required] Main script -->
 <script src="./main.js"></script>
@@ -106,6 +122,21 @@ html {
 	transform: translate(-50%, -50%);
 }
 
+/* Button shown over canvas */
+a.button {
+	position: absolute;
+	background-color: #fff2;
+	left: 50vw;
+	top: 80vh;
+	transform: translateX(-50%);
+	padding: 2vh 3vh;
+	font-size: 8vh;
+	font-family: monospace;
+	border-radius: 2vh;
+	outline: none;
+	user-select: none;
+}
+
 /* Opaque sections's background */
 .mge-overlay section.opaque {
 	background-color: #181818;
@@ -121,7 +152,7 @@ mge.joysticks.L.base.opacity.min = 0.2;
 mge.joysticks.L.tip.opacity.min = 0.2;
 
 // Example player object
-let player = { x: 0, y: 0 };
+let player = { x: 128, y: 128, s: 1 };
 
 // Activating joysticks after 1s
 setTimeout(_ => mge.joysticks.forEach(j => j.setActive(true)), 1000);
@@ -129,11 +160,49 @@ setTimeout(_ => mge.joysticks.forEach(j => j.setActive(true)), 1000);
 // Showing example section on left-joystick tap
 mge.joysticks.L.onTap = j => mge.setOverlay('example');
 
-// Move player with left-joystick
+// Make player jump to the zone tapped with right-joystick
+mge.joysticks.R.onTap = j => (player = { ...player, ...mge.toGameCoords(j.tip) });
+
+// Move player with left-joystick push
 mge.joysticks.L.onPush = j => {
-	player.x += (j.pos.x * delay) / 20;
-	player.y += (j.pos.y * delay) / 20;
+	player.x += (j.pos.x * player.s * delay) / 20;
+	player.y += (j.pos.y * player.s * delay) / 20;
 };
+
+// Left-joystick hold position
+let hold_pos;
+
+// Set left-joystick free on hold and remember position
+mge.joysticks.L.onHoldStart = j => {
+	hold_pos = { ...j.tip };
+	j.base.fixed = false;
+};
+
+// Move camera with left-joystick hold
+mge.joysticks.L.onHold = j => {
+	let new_pos = { ...j.tip };
+	mge.camera.setOn(
+		{
+			x: player.x - ((new_pos.x - hold_pos.x) / mge.elem.clientHeight) * 300,
+			y: player.y - ((new_pos.y - hold_pos.y) / mge.elem.clientHeight) * 300
+		},
+		0.05
+	);
+};
+
+// Set left-joystick fixed when holding ends and reposition it
+mge.joysticks.L.onHoldEnd = j => {
+	j.base.fixed = true;
+	j.position();
+};
+
+// Make player slow down on Right-joystick push
+mge.joysticks.R.onHoldStart = j => (player.s = 2);
+mge.joysticks.R.onHoldEnd = j => (player.s = 1);
+
+// Make player sprint on Right-joystick hold
+mge.joysticks.R.onPushStart = j => (player.s = 0.5);
+mge.joysticks.R.onPushEnd = j => (player.s = 1);
 
 // Logic loop
 mge.logic = _ => {};
@@ -143,8 +212,9 @@ mge.graphics = _ => {
 	// Clear canvas
 	mge.clear();
 
-	// Set camera on player
-	mge.camera.setOn(player);
+	// Smoothly follow player with camera
+	// if (!mge.joysticks.L.tip.held)
+	mge.camera.setOn(player, 0.05);
 
 	// Update camera
 	mge.camera.update();
@@ -158,9 +228,6 @@ mge.graphics = _ => {
 	let y = Math.floor(player.y);
 	mge.ctx.fillRect(x, y, 1, 1);
 };
-
-mge.forceFullscreen = false;
-mge.resize();
 
 // Game images
 let imgs = [];

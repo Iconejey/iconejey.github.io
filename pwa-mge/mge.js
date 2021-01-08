@@ -84,7 +84,7 @@ let joystick_obj = side => {
 
 		j.pos = { x: dx / r, y: dy / r, d: dxy / r };
 
-		if (j.pos.d > j.rout) {
+		if (!j.tip.held && j.pos.d > j.rout) {
 			j.tip.active = 0;
 			j.base.active = 0;
 		}
@@ -206,6 +206,7 @@ var mge = {
 	overlayID: 'undefined',
 	overlayContent: 'undefined',
 	setOverlay: id => {
+		if (!id) id = 'blank';
 		if (id != mge.overlayID) {
 			mge.canvas.classList.remove('mge-canvas-on-' + mge.overlayID + '-section');
 			mge.canvas.classList.add('mge-canvas-on-' + id + '-section');
@@ -364,6 +365,8 @@ document.querySelector('.tactile').addEventListener('touchmove', event => {
 				j.tip.x = x;
 				j.tip.y = y;
 
+				if (j.base.fixed && j.tip.held) j.prev = { ...j.tip };
+
 				j.updatePos();
 
 				if (j.pos.d > 1) {
@@ -413,8 +416,8 @@ document.querySelector('.tactile').addEventListener('touchend', event => {
 // Context
 mge.ctx = mge.canvas.getContext('2d');
 
-// Hide overlay
-mge.setOverlay(null);
+// Show canvas
+mge.setOverlay('blank');
 
 // Resize event
 addEventListener('resize', event => mge.resize());

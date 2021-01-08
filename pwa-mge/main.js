@@ -4,7 +4,7 @@ mge.joysticks.L.base.opacity.min = 0.2;
 mge.joysticks.L.tip.opacity.min = 0.2;
 
 // Example player object
-let player = { x: 0, y: 0 };
+let player = { x: 128, y: 128, s: 1 };
 
 // Activating joysticks after 1s
 setTimeout(_ => mge.joysticks.forEach(j => j.setActive(true)), 1000);
@@ -13,21 +13,48 @@ setTimeout(_ => mge.joysticks.forEach(j => j.setActive(true)), 1000);
 mge.joysticks.L.onTap = j => mge.setOverlay('example');
 
 // Make player jump to the zone tapped with right-joystick
-mge.joysticks.R.onTap = j => (player = mge.toGameCoords(j.tip));
+mge.joysticks.R.onTap = j => (player = { ...player, ...mge.toGameCoords(j.tip) });
 
 // Move player with left-joystick push
 mge.joysticks.L.onPush = j => {
-	player.x += (j.pos.x * delay) / 20;
-	player.y += (j.pos.y * delay) / 20;
+	player.x += (j.pos.x * player.s * delay) / 20;
+	player.y += (j.pos.y * player.s * delay) / 20;
 };
 
-// Move player with right-joystick hold
-mge.joysticks.R.onHold = j => {
-	let pos = mge.toGameCoords(j.tip);
-	let prev = mge.toGameCoords(j.prev);
-	player.x += prev.x - pos.x;
-	player.y += prev.y - pos.y;
+// Left-joystick hold position
+let hold_pos;
+
+// Set left-joystick free on hold and remember position
+mge.joysticks.L.onHoldStart = j => {
+	hold_pos = { ...j.tip };
+	j.base.fixed = false;
 };
+
+// Move camera with left-joystick hold
+mge.joysticks.L.onHold = j => {
+	let new_pos = { ...j.tip };
+	mge.camera.setOn(
+		{
+			x: player.x - ((new_pos.x - hold_pos.x) / mge.elem.clientHeight) * 300,
+			y: player.y - ((new_pos.y - hold_pos.y) / mge.elem.clientHeight) * 300
+		},
+		0.05
+	);
+};
+
+// Set left-joystick fixed when holding ends and reposition it
+mge.joysticks.L.onHoldEnd = j => {
+	j.base.fixed = true;
+	j.position();
+};
+
+// Make player slow down on Right-joystick push
+mge.joysticks.R.onHoldStart = j => (player.s = 2);
+mge.joysticks.R.onHoldEnd = j => (player.s = 1);
+
+// Make player sprint on Right-joystick hold
+mge.joysticks.R.onPushStart = j => (player.s = 0.5);
+mge.joysticks.R.onPushEnd = j => (player.s = 1);
 
 // Logic loop
 mge.logic = _ => {};
@@ -37,7 +64,8 @@ mge.graphics = _ => {
 	// Clear canvas
 	mge.clear();
 
-	// Set camera on player
+	// Smoothly follow player with camera
+	// if (!mge.joysticks.L.tip.held)
 	mge.camera.setOn(player, 0.05);
 
 	// Update camera
@@ -52,9 +80,6 @@ mge.graphics = _ => {
 	let y = Math.floor(player.y);
 	mge.ctx.fillRect(x, y, 1, 1);
 };
-
-// mge.forceFullscreen = false;
-// mge.resize();
 
 // Game images
 let imgs = [];
