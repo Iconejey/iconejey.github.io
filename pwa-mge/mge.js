@@ -136,6 +136,8 @@ let joystick_obj = side => {
 			} else if (j[part].active) {
 				j[part].elem.classList.remove('transition');
 				j[part].elem.style.opacity = j[part].opacity.max;
+			} else if (j.tip.active && !j.base.active) {
+				j.base.elem.classList.remove('transition');
 			} else {
 				j[part].elem.classList.add('transition');
 				j[part].elem.style.opacity = j.active ? j[part].opacity.min : 0;
@@ -164,16 +166,16 @@ var mge = {
 			let size = scale * mge.canvas.width;
 
 			// Resize canvas
-			mge.canvas.style.width = size + 'px';
-			mge.canvas.style.height = size + 'px';
+			mge.canvas.clientWidth = size + 'px';
+			mge.canvas.clientHeight = size + 'px';
 
 			// Move canvas
 			mge.canvas.style.left = -mge.camera.x * scale + 'px';
 			mge.canvas.style.top = -mge.camera.y * scale + 'px';
 		},
-		setOn: obj => {
-			mge.camera.x = obj.x;
-			mge.camera.y = obj.y;
+		setOn: (obj, ratio = 1) => {
+			mge.camera.x = mge.camera.x * (1 - ratio) + obj.x * ratio;
+			mge.camera.y = mge.camera.y * (1 - ratio) + obj.y * ratio;
 		}
 	},
 
@@ -242,7 +244,19 @@ var mge = {
 	},
 
 	toGameCoords: coords => {
-		let x = coords.x;
+		let scale = mge.elem.clientHeight / mge.camera.z;
+		return {
+			x: (coords.x - parseInt(mge.canvas.style.left) - mge.elem.clientWidth / 2) / scale,
+			y: (coords.y - parseInt(mge.canvas.style.top) - mge.elem.clientHeight / 2) / scale
+		};
+	},
+
+	toScreenCoords: coords => {
+		let scale = mge.elem.clientHeight / mge.camera.z;
+		return {
+			x: (coords.x - parseInt(mge.canvas.style.left) - mge.elem.clientWidth / 2) / scale,
+			y: (coords.y - parseInt(mge.canvas.style.top) - mge.elem.clientHeight / 2) / scale
+		};
 	},
 
 	loadImg: (srcs, out, onLoad = p => {}, onError = src => {}, onFinish = _ => {}) => {
@@ -354,7 +368,6 @@ document.querySelector('.tactile').addEventListener('touchmove', event => {
 
 				if (j.pos.d > 1) {
 					let r = j.base.elem.clientWidth / 2;
-					console.log(j.side, r);
 
 					if (j.base.fixed) {
 						j.tip.x = j.base.x + (j.pos.x * r) / j.pos.d;

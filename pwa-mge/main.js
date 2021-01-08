@@ -12,13 +12,21 @@ setTimeout(_ => mge.joysticks.forEach(j => j.setActive(true)), 1000);
 // Showing example section on left-joystick tap
 mge.joysticks.L.onTap = j => mge.setOverlay('example');
 
-// Make player jump to a place
-// mge.joysticks.R.onTap = j => (player = mge.toGameCoords(j.tip));
+// Make player jump to the zone tapped with right-joystick
+mge.joysticks.R.onTap = j => (player = mge.toGameCoords(j.tip));
 
-// Move player with left-joystick
+// Move player with left-joystick push
 mge.joysticks.L.onPush = j => {
 	player.x += (j.pos.x * delay) / 20;
 	player.y += (j.pos.y * delay) / 20;
+};
+
+// Move player with right-joystick hold
+mge.joysticks.R.onHold = j => {
+	let pos = mge.toGameCoords(j.tip);
+	let prev = mge.toGameCoords(j.prev);
+	player.x += prev.x - pos.x;
+	player.y += prev.y - pos.y;
 };
 
 // Logic loop
@@ -30,7 +38,7 @@ mge.graphics = _ => {
 	mge.clear();
 
 	// Set camera on player
-	mge.camera.setOn(player);
+	mge.camera.setOn(player, 0.05);
 
 	// Update camera
 	mge.camera.update();
@@ -45,8 +53,8 @@ mge.graphics = _ => {
 	mge.ctx.fillRect(x, y, 1, 1);
 };
 
-mge.forceFullscreen = false;
-mge.resize();
+// mge.forceFullscreen = false;
+// mge.resize();
 
 // Game images
 let imgs = [];
