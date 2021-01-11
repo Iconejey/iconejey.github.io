@@ -3,153 +3,149 @@ var time = 0;
 var delay = 0;
 
 // Joystick object
-let joystick_obj = side => {
-	let j = {
-		id: -1,
-		side: side,
-		active: false,
+function Joystick(side) {
+	this.id = -1;
+	this.side = side;
+	this.active = false;
 
-		ttrig: 200,
-		rtrig: 0.2,
-		rout: 2,
+	this.ttrig = 200;
+	this.rtrig = 0.2;
+	this.rout = 2;
 
-		tip: { x: 0, y: 0, r: { min: 7, max: 15, val: 10 }, active: 0, held: false, opacity: { min: 0, max: 1 }, elem: document.querySelector('span.joystick.' + (side == 'L' ? 'left' : 'right') + '.tip') },
-		base: { x: 0, y: 0, r: { min: 7, max: 15, val: 10 }, active: 0, fixed: false, opacity: { min: 0, max: 1 }, elem: document.querySelector('span.joystick.' + (side == 'L' ? 'left' : 'right') + '.base') },
+	this.tip = { x: 0, y: 0, r: { min: 7, max: 15, val: 10 }, active: 0, held: false, opacity: { min: 0, max: 1 }, elem: document.querySelector('span.joystick.' + (side == 'L' ? 'left' : 'right') + '.tip') };
+	this.base = { x: 0, y: 0, r: { min: 7, max: 15, val: 10 }, active: 0, fixed: false, opacity: { min: 0, max: 1 }, elem: document.querySelector('span.joystick.' + (side == 'L' ? 'left' : 'right') + '.base') };
 
-		prev: { x: 0, y: 0 },
-		pos: { x: 0, y: 0, d: 0 },
+	this.prev = { x: 0, y: 0 };
+	this.pos = { x: 0, y: 0, d: 0 };
 
-		time: 0,
+	this.time = 0;
 
-		// Tap event
-		onTap: j => {},
+	// Tap event
+	this.onTap = j => {};
 
-		// Push events
-		onPushStart: j => {},
-		onPush: j => {},
-		onPushEnd: j => {},
+	// Push events
+	this.onPushStart = j => {};
+	this.onPush = j => {};
+	this.onPushEnd = j => {};
 
-		// Hold events
-		onHoldStart: j => {},
-		onHold: j => {},
-		onHoldEnd: j => {},
+	// Hold events
+	this.onHoldStart = j => {};
+	this.onHold = j => {};
+	this.onHoldEnd = j => {};
 
-		position: _ => {},
-		setActive: mode => {},
-		draw: ctx => {},
-		update: _ => {},
-		updatePos: _ => {},
+	this.position = _ => {};
+	this.setActive = mode => {};
+	this.draw = ctx => {};
+	this.update = _ => {};
+	this.updatePos = _ => {};
 
-		color: 'white'
-	};
+	this.color = 'white';
 
-	j.setActive = mode => {
-		if (mode != j.active) {
-			j.active = mode;
+	this.setActive = mode => {
+		if (mode != this.active) {
+			this.active = mode;
 
 			if (mode) {
-				j.tip.elem.style.opacity = 1;
-				j.base.elem.style.opacity = 1;
+				this.tip.elem.style.opacity = 1;
+				this.base.elem.style.opacity = 1;
 
-				j.position();
+				this.position();
 
-				j.tip.x = j.base.x;
-				j.tip.y = j.base.y;
+				this.tip.x = this.base.x;
+				this.tip.y = this.base.y;
 			}
 		}
 	};
 
-	j.position = _ => {
-		j.base.elem.classList.remove('transition');
-		j.tip.elem.classList.remove('transition');
+	this.position = _ => {
+		this.base.elem.classList.remove('transition');
+		this.tip.elem.classList.remove('transition');
 
-		let x = (mge.elem.clientWidth / 6) * (j.side == 'R' ? 5 : 1);
+		let x = (mge.elem.clientWidth / 6) * (this.side == 'R' ? 5 : 1);
 		let y = (mge.elem.clientHeight * 3) / 4;
 
-		j.base.x = x;
-		j.base.y = y;
+		this.base.x = x;
+		this.base.y = y;
 
-		j.base.elem.style.left = j.base.x + 'px';
-		j.base.elem.style.top = j.base.y + 'px';
+		this.base.elem.style.left = this.base.x + 'px';
+		this.base.elem.style.top = this.base.y + 'px';
 
-		j.tip.elem.style.left = j.tip.x + 'px';
-		j.tip.elem.style.top = j.tip.y + 'px';
+		this.tip.elem.style.left = this.tip.x + 'px';
+		this.tip.elem.style.top = this.tip.y + 'px';
 	};
 
-	j.updatePos = _ => {
-		let r = j.base.elem.clientWidth / 2;
-		let dx = j.tip.x - j.base.x;
-		let dy = j.tip.y - j.base.y;
+	this.updatePos = _ => {
+		let r = this.base.elem.clientWidth / 2;
+		let dx = this.tip.x - this.base.x;
+		let dy = this.tip.y - this.base.y;
 		let dxy = Math.sqrt(dx * dx + dy * dy);
 
-		j.pos = { x: dx / r, y: dy / r, d: dxy / r };
+		this.pos = { x: dx / r, y: dy / r, d: dxy / r };
 
-		if (!j.tip.held && j.pos.d > j.rout) {
-			j.tip.active = 0;
-			j.base.active = 0;
+		if (!this.tip.held && this.pos.d > this.rout) {
+			this.tip.active = 0;
+			this.base.active = 0;
 		}
 	};
 
-	j.update = _ => {
+	this.update = _ => {
 		// To fix position
 		let fix = _ => {
-			if (j.base.fixed || !j.tip.active) {
-				j.tip.x = j.base.x;
-				j.tip.y = j.base.y;
+			if (this.base.fixed || !this.tip.active) {
+				this.tip.x = this.base.x;
+				this.tip.y = this.base.y;
 			} else {
-				j.base.x = j.tip.x;
-				j.base.y = j.tip.y;
+				this.base.x = this.tip.x;
+				this.base.y = this.tip.y;
 			}
 		};
 
-		if (j.tip.active) {
-			if (j.base.active) {
-				if (j.tip.held) {
-					j.onHold(j);
+		if (this.tip.active) {
+			if (this.base.active) {
+				if (this.tip.held) {
+					this.onHold(this);
 					fix();
-				} else j.onPush(j);
+				} else this.onPush(this);
 			} else {
-				if (j.pos.d > j.rtrig) {
-					j.base.active = true;
-					j.onPushStart(j);
-				} else if (time - j.time > j.ttrig) {
-					j.base.active = true;
-					j.tip.held = true;
+				if (this.pos.d > this.rtrig) {
+					this.base.active = true;
+					this.onPushStart(this);
+				} else if (time - this.time > this.ttrig) {
+					this.base.active = true;
+					this.tip.held = true;
 					fix();
-					j.onHoldStart(j);
+					this.onHoldStart(this);
 				}
 			}
 		} else fix();
 
 		// Set coords and size of tip and base elements
 		for (let part of ['tip', 'base']) {
-			j[part].elem.style.left = j[part].x + 'px';
-			j[part].elem.style.top = j[part].y + 'px';
-			j[part].elem.style.width = j[part].r.val * 2 + 'vh';
-			j[part].elem.style.height = j[part].r.val * 2 + 'vh';
+			this[part].elem.style.left = this[part].x + 'px';
+			this[part].elem.style.top = this[part].y + 'px';
+			this[part].elem.style.width = this[part].r.val * 2 + 'vh';
+			this[part].elem.style.height = this[part].r.val * 2 + 'vh';
 
-			let timed = time - j.time > j.ttrig * 2.8;
+			let timed = time - this.time > this.ttrig * 2.8;
 
-			if (j.tip.held) {
-				j[part].elem.classList[timed ? 'remove' : 'add']('transition');
-				j[part].elem.style.opacity = j[part].opacity.max;
-			} else if (j[part].active) {
-				j[part].elem.classList.remove('transition');
-				j[part].elem.style.opacity = j[part].opacity.max;
-			} else if (j.tip.active && !j.base.active) {
-				j.base.elem.classList.remove('transition');
+			if (this.tip.held) {
+				this[part].elem.classList[timed ? 'remove' : 'add']('transition');
+				this[part].elem.style.opacity = this[part].opacity.max;
+			} else if (this[part].active) {
+				this[part].elem.classList.remove('transition');
+				this[part].elem.style.opacity = this[part].opacity.max;
+			} else if (this.tip.active && !this.base.active) {
+				this.base.elem.classList.remove('transition');
 			} else {
-				j[part].elem.classList.add('transition');
-				j[part].elem.style.opacity = j.active ? j[part].opacity.min : 0;
+				this[part].elem.classList.add('transition');
+				this[part].elem.style.opacity = this.active ? this[part].opacity.min : 0;
 			}
 		}
 
-		j.base.r.val = j.tip.held ? j.base.r.min - 1 : j.base.r.max;
-		j.tip.r.val = j.tip.r.min;
+		this.base.r.val = this.tip.held ? this.base.r.min - 1 : this.base.r.max;
+		this.tip.r.val = this.tip.r.min;
 	};
-
-	return j;
-};
+}
 
 // Game engine object
 var mge = {
@@ -158,24 +154,28 @@ var mge = {
 	overlay: document.querySelector('.mge-main .mge-overlay'),
 
 	camera: {
-		x: 128,
-		y: 128,
-		z: 128,
+		x: 0,
+		y: 0,
+		z: 100,
+
 		update: _ => {
 			let scale = mge.elem.clientHeight / mge.camera.z;
 			let size = scale * mge.canvas.width;
 
 			// Resize canvas
-			mge.canvas.clientWidth = size + 'px';
-			mge.canvas.clientHeight = size + 'px';
+			mge.canvas.style.width = size + 'px';
+			mge.canvas.style.height = size + 'px';
 
 			// Move canvas
 			mge.canvas.style.left = -mge.camera.x * scale + 'px';
 			mge.canvas.style.top = -mge.camera.y * scale + 'px';
 		},
-		setOn: (obj, ratio = 1) => {
-			mge.camera.x = mge.camera.x * (1 - ratio) + obj.x * ratio;
-			mge.camera.y = mge.camera.y * (1 - ratio) + obj.y * ratio;
+
+		set: (obj, ratio = 1) => {
+			for (let c of 'xyz') {
+				if (c in obj) mge.camera[c] = mge.camera[c] * (1 - ratio) + obj[c] * ratio;
+			}
+			// console.log(mge.camera);
 		}
 	},
 
@@ -253,11 +253,7 @@ var mge = {
 	},
 
 	toScreenCoords: coords => {
-		let scale = mge.elem.clientHeight / mge.camera.z;
-		return {
-			x: (coords.x - parseInt(mge.canvas.style.left) - mge.elem.clientWidth / 2) / scale,
-			y: (coords.y - parseInt(mge.canvas.style.top) - mge.elem.clientHeight / 2) / scale
-		};
+		return coords;
 	},
 
 	loadImg: (srcs, out, onLoad = p => {}, onError = src => {}, onFinish = _ => {}) => {
@@ -288,8 +284,8 @@ var mge = {
 	},
 
 	joysticks: {
-		L: joystick_obj('L'),
-		R: joystick_obj('R'),
+		L: new Joystick('L'),
+		R: new Joystick('R'),
 		forEach: callback => {
 			callback(mge.joysticks.L);
 			callback(mge.joysticks.R);

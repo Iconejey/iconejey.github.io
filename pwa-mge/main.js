@@ -33,13 +33,9 @@ mge.joysticks.L.onHoldStart = j => {
 // Move camera with left-joystick hold
 mge.joysticks.L.onHold = j => {
 	let new_pos = { ...j.tip };
-	mge.camera.setOn(
-		{
-			x: player.x - ((new_pos.x - hold_pos.x) / mge.elem.clientHeight) * 300,
-			y: player.y - ((new_pos.y - hold_pos.y) / mge.elem.clientHeight) * 300
-		},
-		0.05
-	);
+	let x = player.x - ((new_pos.x - hold_pos.x) / mge.elem.clientHeight) * 200;
+	let y = player.y - ((new_pos.y - hold_pos.y) / mge.elem.clientHeight) * 200;
+	mge.camera.set({ x: x, y: y, z: 128 }, 0.05);
 };
 
 // Set left-joystick fixed when holding ends and reposition it
@@ -48,11 +44,11 @@ mge.joysticks.L.onHoldEnd = j => {
 	j.position();
 };
 
-// Make player slow down on Right-joystick push
+// Make player sprint on Right-joystick hold
 mge.joysticks.R.onHoldStart = j => (player.s = 2);
 mge.joysticks.R.onHoldEnd = j => (player.s = 1);
 
-// Make player sprint on Right-joystick hold
+// Make player slow down on Right-joystick push
 mge.joysticks.R.onPushStart = j => (player.s = 0.5);
 mge.joysticks.R.onPushEnd = j => (player.s = 1);
 
@@ -65,8 +61,7 @@ mge.graphics = _ => {
 	mge.clear();
 
 	// Smoothly follow player with camera
-	// if (!mge.joysticks.L.tip.held)
-	mge.camera.setOn(player, 0.05);
+	if (!mge.joysticks.L.tip.held) mge.camera.set({ ...player, z: 100 }, 0.05);
 
 	// Update camera
 	mge.camera.update();
