@@ -96,6 +96,9 @@ mge.loadImg(
 		mge.canvas.width = bg.width;
 		mge.canvas.height = bg.height;
 
+		// Camera on player
+		mge.camera.set({ ...player, z: 100 }, 1);
+
 		// Main loop
 		mge.tick(0);
 	}

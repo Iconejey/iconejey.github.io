@@ -108,7 +108,7 @@ html {
 }
 
 /* Style applied to canvas when the example section is shown */
-.mge-canvas-on-example-section {
+.mge-main canvas.on-example-section {
 	filter: blur(5px);
 }
 

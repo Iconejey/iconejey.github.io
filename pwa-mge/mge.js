@@ -208,8 +208,8 @@ var mge = {
 	setOverlay: id => {
 		if (!id) id = 'blank';
 		if (id != mge.overlayID) {
-			mge.canvas.classList.remove('mge-canvas-on-' + mge.overlayID + '-section');
-			mge.canvas.classList.add('mge-canvas-on-' + id + '-section');
+			mge.canvas.classList.remove('on-' + mge.overlayID + '-section');
+			mge.canvas.classList.add('on-' + id + '-section');
 
 			mge.overlayID = id;
 			if (!['landscape', 'fullscreen'].includes(id)) mge.overlayContent = id;
