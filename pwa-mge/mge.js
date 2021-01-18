@@ -236,7 +236,7 @@ var mge = {
 
 	resize: _ => {
 		mge.landscapeMode = innerWidth > innerHeight;
-		mge.fullscreenOn = getFullscreen();
+		mge.fullscreenOn = mge.getFullscreen();
 
 		let section = mge.overlayContent;
 		if (!mge.landscapeMode) section = 'landscape';
