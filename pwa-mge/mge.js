@@ -184,10 +184,11 @@ var mge = {
 
 	clear: _ => mge.ctx.clearRect(0, 0, mge.canvas.width, mge.canvas.height),
 
+	getFullscreen: _ => Boolean(document.fullscreenElement),
+
 	forceFullscreen: true,
 	fullscreenOn: false,
 	setFullscreen: mode => {
-		let fse = document.fullscreenElement;
 		setTimeout(_ => mge.resize(), 10);
 
 		if (!mode || mode == 'on') {
@@ -231,8 +232,6 @@ var mge = {
 			}
 		}
 	},
-
-	getFullscreen: _ => Boolean(document.fullscreenElement),
 
 	resize: _ => {
 		mge.landscapeMode = innerWidth > innerHeight;
