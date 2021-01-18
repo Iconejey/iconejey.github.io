@@ -232,9 +232,11 @@ var mge = {
 		}
 	},
 
+	getFullscreen: _ => Boolean(document.fullscreenElement),
+
 	resize: _ => {
 		mge.landscapeMode = innerWidth > innerHeight;
-		mge.fullscreenOn = Boolean(document.fullscreenElement);
+		mge.fullscreenOn = getFullscreen();
 
 		let section = mge.overlayContent;
 		if (!mge.landscapeMode) section = 'landscape';
