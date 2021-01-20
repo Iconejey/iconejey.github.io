@@ -1,6 +1,6 @@
-const setCookie = (key, val, exp) => {
+const setCookie = (key, val, exp = 720) => {
 	let d = new Date();
-	d.setTime(d.getTime() + (exp ? exp : 2 * 360) * 24 * 60 * 60 * 1000);
+	d.setTime(d.getTime() + exp * 24 * 60 * 60 * 1000);
 	document.cookie = `${key}=${val};expires=${d.toUTCString()}`;
 };
 
@@ -9,7 +9,12 @@ const getCookie = key => {
 		let pair = cookie.split('=');
 		if (pair[0] == key) return pair[1];
 	}
+
 	return '';
+};
+
+const initCookie = (key, val) => {
+	if (!getCookie(key)) setCookie(key, val);
 };
 
 const remCookie = key => {
