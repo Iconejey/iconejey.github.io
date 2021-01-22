@@ -267,7 +267,13 @@ var mge = {
 				if (!load_err) {
 					load_num++;
 					let key = src.split('/')[src.split('/').length - 1].split('.')[0];
-					out[key] = img;
+
+					if ('chrome' in window) {
+						out[key] = document.createElement('canvas');
+						out[key].width = img.width;
+						out[key].height = img.height;
+						out[key].getContext('2d').drawImage(img, 0, 0);
+					} else out[key] = img;
 
 					if (load_num == srcs.length) onFinish();
 					else onLoad(load_num / srcs.length);
