@@ -33,12 +33,6 @@ function Joystick(side) {
 	this.onHold = j => {};
 	this.onHoldEnd = j => {};
 
-	this.position = _ => {};
-	this.setActive = mode => {};
-	this.draw = ctx => {};
-	this.update = _ => {};
-	this.updatePos = _ => {};
-
 	this.color = 'white';
 
 	this.setActive = mode => {
@@ -175,7 +169,6 @@ var mge = {
 			for (let c of 'xyz') {
 				if (c in obj) mge.camera[c] = mge.camera[c] * (1 - ratio) + obj[c] * ratio;
 			}
-			// console.log(mge.camera);
 		}
 	},
 
@@ -296,17 +289,27 @@ var mge = {
 	logic: _ => {},
 	graphics: _ => {},
 
-	tick: new_time => {
+	// Tick loop
+	tick: async new_time => {
 		delay = new_time - time;
 		time = new_time;
 
-		mge.joysticks.forEach(j => j.update());
-
-		mge.logic();
-		mge.graphics();
+		// Parallel async calls
+		await Promise.all([
+			(async _ => {
+				mge.joysticks.forEach(j => j.update());
+				mge.camera.update();
+			})(),
+			(async _ => {
+				mge.logic();
+				mge.graphics();
+			})()
+		]);
 
 		requestAnimationFrame(mge.tick);
-	}
+	},
+
+	start: _ => mge.tick(0)
 };
 
 // Joystick events

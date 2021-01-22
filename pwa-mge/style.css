@@ -24,6 +24,15 @@ html {
 	transform: translate(-50%, -50%);
 }
 
+/* Fps span shown over canvas */
+span#fps {
+	position: absolute;
+	padding: 5vh 6vh;
+	font-size: 6vh;
+	font-family: monospace;
+	user-select: none;
+}
+
 /* Button shown over canvas */
 a.button {
 	position: absolute;

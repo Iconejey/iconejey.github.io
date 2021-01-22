@@ -53,7 +53,10 @@ mge.joysticks.R.onPushStart = j => (player.s = 0.5);
 mge.joysticks.R.onPushEnd = j => (player.s = 1);
 
 // Logic loop
-mge.logic = _ => {};
+mge.logic = _ => {
+	// Fps count
+	document.querySelector('span#fps').innerHTML = Math.floor(1000 / delay);
+};
 
 // Graphics loop
 mge.graphics = _ => {
@@ -62,9 +65,6 @@ mge.graphics = _ => {
 
 	// Smoothly follow player with camera
 	if (!mge.joysticks.L.tip.held) mge.camera.set({ ...player, z: 100 }, 0.05);
-
-	// Update camera
-	mge.camera.update();
 
 	// Draw background
 	mge.ctx.drawImage(imgs['default_background'], 0, 0);
@@ -100,6 +100,6 @@ mge.loadImg(
 		mge.camera.set({ ...player, z: 100 }, 1);
 
 		// Main loop
-		mge.tick(0);
+		mge.start();
 	}
 );
