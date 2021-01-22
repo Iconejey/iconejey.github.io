@@ -195,6 +195,7 @@ var mge = {
 		}
 	},
 
+	forceLandscape: true,
 	landscapeMode: false,
 
 	overlayID: 'undefined',
@@ -231,7 +232,7 @@ var mge = {
 		mge.fullscreenOn = mge.getFullscreen();
 
 		let section = mge.overlayContent;
-		if (!mge.landscapeMode) section = 'landscape';
+		if (!mge.landscapeMode && mge.forceLandscape) section = 'landscape';
 		if (!mge.fullscreenOn && mge.forceFullscreen) section = 'fullscreen';
 		mge.setOverlay(section);
 
