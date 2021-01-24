@@ -144,7 +144,7 @@ function Joystick(side) {
 // Game engine object
 var mge = {
 	elem: document.querySelector('div.mge-main'),
-	canvas: document.querySelector('.mge-main canvas'),
+	canvas: document.querySelector('.mge-main canvas#mge-can'),
 	overlay: document.querySelector('.mge-main .mge-overlay'),
 
 	camera: {

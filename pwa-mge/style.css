@@ -5,7 +5,7 @@ html {
 }
 
 /* Style applied to canvas */
-.mge-main canvas {
+.mge-main canvas#mge-can {
 	height: 200vh;
 }
 
