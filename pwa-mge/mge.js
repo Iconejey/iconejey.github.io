@@ -209,23 +209,21 @@ var mge = {
 			mge.overlayID = id;
 			if (!['landscape', 'fullscreen'].includes(id)) mge.overlayContent = id;
 
-			if (id) {
-				mge.overlay.classList.remove('mge-hidden');
-
-				let done = false;
-				for (let section of document.querySelectorAll('.mge-overlay section')) {
-					if (section.id == id) {
-						done = true;
-						section.classList.remove('mge-hidden');
-					} else section.classList.add('mge-hidden');
-				}
-
-				if (!done) console.error(id + ': This section does not exist.');
-			} else {
-				mge.overlay.classList.add('mge-hidden');
+			let done = false;
+			for (let section of document.querySelectorAll('.mge-overlay section')) {
+				if (section.id == id) {
+					done = true;
+					section.classList.remove('mge-hidden');
+				} else section.classList.add('mge-hidden');
 			}
+
+			if (!done) console.error(id + ': This section does not exist.');
+
+			mge.onOverlayChange();
 		}
 	},
+
+	onOverlayChange: _ => {},
 
 	resize: _ => {
 		mge.landscapeMode = innerWidth > innerHeight;
