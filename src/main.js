@@ -14,13 +14,18 @@ hidden.sort((a, b) => {
 	return top_a - top_b;
 });
 
+function map(value, in_min, in_max, out_min, out_max) {
+	const val = ((value - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+	return Math.min(Math.max(val, out_min), out_max);
+}
+
 const observer = new IntersectionObserver(
 	(entries, observer) => {
 		entries.forEach(entry => {
 			if (entry.isIntersecting) reveal(entry.target);
 		});
 	},
-	{ threshold: 0.2 }
+	{ threshold: map(innerHeight / innerWidth, 0.5, 2, 0.2, 0.7) }
 );
 
 function setNextObserver() {
