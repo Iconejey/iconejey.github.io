@@ -1,6 +1,6 @@
-let i = 4;
 const delay = 300;
 const hidden = [...document.querySelectorAll('.fade-in-hidden')];
+let last_delay = Date.now();
 
 // Sort the elements in the order they appear on the page
 hidden.sort((a, b) => {
@@ -14,8 +14,43 @@ hidden.sort((a, b) => {
 	return top_a - top_b;
 });
 
-for (let elem of hidden) {
-	setTimeout(() => {
-		elem.classList.remove('fade-in-hidden');
-	}, i++ * delay);
+const observer = new IntersectionObserver(
+	(entries, observer) => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting) reveal(entry.target);
+		});
+	},
+	{ threshold: 0.2 }
+);
+
+function setNextObserver() {
+	if (!hidden.length) return;
+
+	const next = hidden.shift();
+
+	// If scrolled past the element, reveal it immediately
+	const top = next.getBoundingClientRect().top;
+	if (top < 0) {
+		reveal(next, true);
+	} else {
+		observer.observe(next);
+	}
 }
+
+function reveal(elem, skip_delay = false) {
+	// Different between now and the next element delay, to check if we need to wait
+	const to_wait = Math.max(0, last_delay + delay - Date.now());
+
+	setTimeout(
+		() => {
+			elem.classList.remove('fade-in-hidden');
+			last_delay = Date.now();
+			setNextObserver();
+			observer.unobserve(elem);
+		},
+		skip_delay ? 0 : to_wait
+	);
+}
+
+// Start the first observer after one second
+setTimeout(() => setNextObserver(), 1000);

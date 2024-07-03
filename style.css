@@ -130,7 +130,7 @@ h1#first {
 	text-align: end;
 	opacity: 0.5;
 	font-weight: 500;
-	font-size: calc(var(--title-size) * 0.45);
+	font-size: max(0.9rem, calc(var(--title-size) * 0.45));
 	margin-bottom: -0.1em;
 }
 
