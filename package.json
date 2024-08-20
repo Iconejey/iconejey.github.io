@@ -1,0 +1,16 @@
+{
+	"name": "iconejey.github.io",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js",
+		"prod": "pm2 start server.js --name cv"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^4.19.2"
+	}
+}
