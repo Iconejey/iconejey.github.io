@@ -1,0 +1,47 @@
+{
+	"name": "CV Nicolas Gouwy",
+	"short_name": "CV",
+	"description": "CV en ligne de Nicolas Gouwy, développeur web front-end.",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#131313",
+	"theme_color": "#131313",
+	"icons": [
+		{
+			"src": "https://nomark.ngwy.fr/icon/maskable/code/e6e4e7/272727/1024/1024",
+			"sizes": "1024x1024",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "https://nomark.ngwy.fr/icon/maskable/code/e6e4e7/272727/512/512",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "https://nomark.ngwy.fr/icon/maskable/code/e6e4e7/272727/256/256",
+			"sizes": "256x256",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "https://nomark.ngwy.fr/icon/circle/code/e6e4e7/272727/1024/1024",
+			"sizes": "1024x1024",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "https://nomark.ngwy.fr/icon/circle/code/e6e4e7/272727/512/512",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "https://nomark.ngwy.fr/icon/circle/code/e6e4e7/272727/256/256",
+			"sizes": "256x256",
+			"type": "image/png",
+			"purpose": "any"
+		}
+	]
+}

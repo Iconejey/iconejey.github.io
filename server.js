@@ -11,6 +11,11 @@ app.get('/style.css', (req, res) => {
 	res.sendFile(__dirname + '/style.css');
 });
 
+// Serve manifest.json
+app.get('/manifest.json', (req, res) => {
+	res.sendFile(__dirname + '/manifest.json');
+});
+
 // Serve src/
 app.use('/src', express.static('src'));
 
