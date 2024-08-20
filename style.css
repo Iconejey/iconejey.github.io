@@ -13,6 +13,7 @@ body {
 
 	--light-color: #e6e4e7;
 	--dark-color: #272727;
+	--soft-color: #868587;
 
 	color: var(--dark-color);
 	background-color: var(--light-color);
@@ -24,9 +25,15 @@ body {
 
 	max-width: 75rem;
 	margin: auto;
+
+	::selection {
+		background-color: var(--dark-color);
+		color: var(--light-color);
+	}
 }
 
 .icon {
+	color: var(--dark-color);
 	display: inline-block;
 	width: 1em;
 	height: 1em;
@@ -128,7 +135,7 @@ h1#first {
 
 #title {
 	text-align: end;
-	opacity: 0.5;
+	color: var(--soft-color);
 	font-weight: 500;
 	font-size: max(0.9rem, calc(var(--title-size) * 0.45));
 	margin-bottom: -0.1em;
@@ -164,13 +171,32 @@ h1#first {
 	margin-left: var(--margin-left);
 }
 
+#contact a {
+	color: var(--soft-color);
+}
+
 a {
 	color: var(--dark-color);
-	opacity: 0.5;
+}
+
+a.btn {
+	display: block;
+	width: fit-content;
+	border: 3px solid var(--dark-color);
+	padding: 0.4em 0.5em;
+	color: var(--dark-color);
+	margin-top: 1.2em;
+	user-select: none;
+}
+
+a.btn:hover {
+	color: var(--light-color);
+	background-color: var(--dark-color);
+	text-decoration: none;
 }
 
 p {
-	opacity: 0.5;
+	color: var(--soft-color);
 	line-height: 1.45;
 }
 
@@ -200,12 +226,12 @@ a:not(:hover) {
 /* --- Comp & Form --- */
 
 .list h3 {
-	opacity: 0.5;
+	color: var(--soft-color);
 	margin-top: 2em;
 }
 
 li span {
-	opacity: 0.5;
+	color: var(--soft-color);
 }
 
 .bullet {
