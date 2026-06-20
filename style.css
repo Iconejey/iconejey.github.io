@@ -145,11 +145,12 @@ h1#first {
 
 .arr {
 	display: flex;
+	gap: 1rem;
 }
 
 .arr > :first-child {
 	flex: 1.2;
-	max-width: 19rem;
+	max-width: 18rem;
 }
 
 .arr > :last-child {
@@ -300,6 +301,10 @@ li:last-child .exp {
 
 	.arr ~ .arr {
 		flex-direction: column-reverse;
+	}
+
+	.arr > :first-child {
+		max-width: 100%;
 	}
 
 	#profil h2 {

@@ -1,9 +1,14 @@
 const express = require('express');
 const app = express();
 
-// Serve index.html
+// Serve alternance.html
 app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/index.html');
+	res.sendFile(__dirname + '/cdi.html');
+});
+
+// Serve cdi.html
+app.get('/alternance', (req, res) => {
+	res.sendFile(__dirname + '/alternance.html');
 });
 
 // Serve style.css
