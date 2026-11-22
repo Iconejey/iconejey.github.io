@@ -1,14 +1,9 @@
 const express = require('express');
 const app = express();
 
-// Serve alternance.html
+// Serve index.html
 app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/cdi.html');
-});
-
-// Serve cdi.html
-app.get('/alternance', (req, res) => {
-	res.sendFile(__dirname + '/alternance.html');
+	res.sendFile(__dirname + '/index.html');
 });
 
 // Serve style.css
@@ -28,4 +23,5 @@ app.use('/src', express.static('src'));
 app.use('/res', express.static('res'));
 
 // Start server
-app.listen(8001, () => console.log('Server started on http://localhost:3000'));
+const port = 3000;
+app.listen(port, () => console.log(`Server started on http://localhost:${port}`));

@@ -7,7 +7,9 @@ const html = (strings, ...values) => {
 	return str;
 };
 
-// Animated wrting text component
+const $ = selector => document.querySelector(selector);
+
+// Animated writing text component
 customElements.define(
 	'writing-text',
 	class extends HTMLElement {
